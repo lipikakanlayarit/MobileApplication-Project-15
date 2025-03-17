@@ -17,5 +17,48 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  # assets:
-  #   -assets/
+  assets:
+    - assets/images/angry-01.png
+    - assets/images/carrot-1-01.png
+    - assets/images/carrot-2-01.png
+    - assets/images/carrot-3-01.png
+    - assets/images/focus-01.png
+    - assets/images/Happy-01.png
+    - assets/images/HomeBackground-01.png
+    - assets/images/nervous-01.png
+    - assets/images/normal-01.png
+    - assets/images/sad-01.png
+
+  fonts:
+    - family: Kanit
+      fonts:
+        - asset: assets/Fonts/Kanit-Regular.ttf
+        - asset: assets/Fonts/Kanit-Bold.ttf
+          weight: 700
+        - asset: assets/Fonts/Kanit-Light.ttf
+          weight: 300
+        - asset: assets/Fonts/Kanit-Medium.ttf
+          weight: 500
+        - asset: assets/Fonts/Kanit-SemiBold.ttf
+          weight: 600
+        - asset: assets/Fonts/Kanit-Italic.ttf
+          style: italic
+        - asset: assets/Fonts/Kanit-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: assets/Fonts/Kanit-LightItalic.ttf
+          weight: 300
+          style: italic
+        - asset: assets/Fonts/Kanit-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/Fonts/Kanit-SemiBoldItalic.ttf
+          weight: 600
+          style: italic
+
+    - family: KleeOne
+      fonts:
+        - asset: assets/Fonts/KleeOne-Regular.ttf
+        - asset: assets/Fonts/KleeOne-SemiBold.ttf
+          weight: 600
+

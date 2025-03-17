@@ -31,11 +31,13 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
 
       bottomNavigationBar: BottomNavigationBar(
         
-      
+        
         currentIndex: myCurrentIndex,
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.amber,
-        unselectedItemColor: Colors.blue,
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Color.fromARGB(255, 90, 78, 66),
+        selectedItemColor: Color.fromARGB(255, 253, 242, 210),
+        unselectedItemColor: Color.fromARGB(255, 119, 104, 88),
+        
 
         onTap: (index){
           setState(() {
