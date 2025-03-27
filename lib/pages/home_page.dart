@@ -1,149 +1,209 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Background Image
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/HomeBackground-01.png', 
-              fit: BoxFit.cover,
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.white10,
+      ),
+      home: Scaffold(
+      backgroundColor: const Color(0xFFF3EAD3), 
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            flex: 2,
+            child: Container(
+              width: screenWidth,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/HomeBackground-01.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Stack(
+                children: [
+                  //  date
+                  Positioned(
+                      top: screenHeight * 0.09,
+                      left: screenWidth * 0.10,
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                DateFormat.d().format(DateTime.now()), 
+                                style: const TextStyle(
+                                  fontFamily: 'KleeOne',
+                                  fontSize: 60,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              
+                            ],
+                          ),
+                          // month
+                          Padding(
+                            padding: const EdgeInsets.only(left:10), 
+                            child: Text(
+                              DateFormat.MMMM().format(DateTime.now()), // เดือน
+                              style: const TextStyle(
+                                fontFamily: 'KleeOne',
+                                fontSize: 40,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  // รูปกระต่าย
+                  Positioned(
+                    bottom: screenHeight * 0.05,
+                    right: screenWidth * 0.05,
+                    child: Image.asset(
+                      'assets/images/normal-01.png',
+                      width: screenWidth * 0.5,
+                      height: screenWidth * 0.5,
+                    ),
+                  ),
+
+                  // (It's gonna be okay)
+                  Positioned(
+                    top: screenHeight * 0.05,
+                    right: screenWidth * 0.12,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 25, vertical: 16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF0E315A),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: const Text(
+                        "It's gonna\nbe okay",
+                        style: TextStyle(
+                          fontFamily: 'KleeOne',
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          '04',
-                          style: TextStyle(
-                            fontSize: 48,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Text(
-                          'January',
-                          style: TextStyle(
-                            fontSize: 24,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Text(
-                      'It\'s gonna be okay',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontStyle: FontStyle.italic,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Center(
-                child: Text(
-                  'How do you feel,\nI\'m Always Here.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+
+          // "How do you feel"
+          Expanded(
+            flex: 1,
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05, vertical: screenHeight * 0.02),
+              // padding: EdgeInsets.all(screenHeight * 0.02),
+              decoration: BoxDecoration(
+                color:  Color.fromRGBO(183, 202, 121,1),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color.fromRGBO(87, 113, 112, 0.5),
+                    offset: const Offset(7, 9), 
+                    blurRadius: 0, 
+                    // spreadRadius: 5, 
                   ),
+                  // BoxShadow(
+                  //   color: Color.fromRGBO(87, 113, 112, 0.6), 
+                  //   offset: Offset(0, 10), 
+                  //   blurRadius: 0,
+                  //   spreadRadius: 5,
+                  // ),
+                ],
+              ),
+              child: const Center(
+                child: Text(
+                  "How do you feel,\nI'm Always Here.",
+                  style: TextStyle(
+                    fontFamily: 'KleeOne',
+                    fontSize: 30,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(height: 20),
-              Container(
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: const Color.fromRGBO(183, 202, 121, 100),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Today Mood',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+            ),
+          ),
+
+          // Today Mood
+          Expanded(
+            flex: 1,
+            child: Container(
+              width: screenWidth,
+               margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05, vertical: screenHeight * 0.02),
+              padding: EdgeInsets.all(screenWidth * 0.03),
+              decoration: BoxDecoration(
+                color:  Color.fromRGBO(183, 202, 121,1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Today Mood",
+                    style: TextStyle(
+                      fontFamily: 'Kanit',
+                      fontSize: 20,
+                      color: Colors.black,
                     ),
-                    const SizedBox(height: 10),
-                    Row(
+                  ),
+                  const SizedBox(height: 6),
+                  Container(
+                    padding: EdgeInsets.all(screenHeight * 0.025),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: const [
-                        Moodassets(time: '10:58', assetPath: 'assets/images/sad-01.png'),
-                        Moodassets(time: '11:58', assetPath: 'assets/images/nervous-01.png'),
-                        Moodassets(time: '13:20', assetPath: 'assets/images/normal-01.png'),
-                        Moodassets(time: '16:30', assetPath: 'assets/images/sad-01.png'),
-                        Moodassets(time: '21:56', assetPath: 'assets/images/nervous-01.png'),
-                        Moodassets(time: '23:56', assetPath: 'assets/images/nervous-01.png'),
-                      ],
+                      children: List.generate(6, (index) {
+                        return Column(
+                          children: [
+                            Image.asset(
+                              'assets/images/normal-01.png',
+                              width: screenWidth * 0.08,
+                              height: screenWidth * 0.08,
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              "${10 + index * 2}:00",
+                              style: const TextStyle(
+                                fontFamily: 'Kanit',
+                                fontSize: 14,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.article),
-            label: 'Article',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
-            label: 'Quest',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: 'Dashboard',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-      ),
-    );
+    ),
+  );
   }
 }
 
-class Moodassets extends StatelessWidget {
-  final String time;
-  final String assetPath;
-
-  const Moodassets({required this.time, required this.assetPath, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Image.asset(assetPath, width: 32, height: 32),
-        const SizedBox(height: 4),
-        Text(time),
-      ],
-    );
-  }
-}
