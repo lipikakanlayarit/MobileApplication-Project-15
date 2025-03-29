@@ -51,7 +51,8 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         BottomNavigationBarItem(icon: Icon(Icons.list_alt_outlined),label: 'Quest'),
         BottomNavigationBarItem(icon: Icon(Icons.bar_chart_outlined),label: 'Dashboard'),
         BottomNavigationBarItem(icon: Icon(Icons.person_outlined),label: 'Profile'),
-      ],),
+      ],
+      ),
       body: page[myCurrentIndex]
     );
   }

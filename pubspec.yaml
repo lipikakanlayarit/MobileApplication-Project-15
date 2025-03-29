@@ -9,7 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  intl: 
+  intl: any
 
 dev_dependencies:
   flutter_test:
@@ -29,6 +29,9 @@ flutter:
     - assets/images/nervous-01.png
     - assets/images/normal-01.png
     - assets/images/sad-01.png
+    - assets/images/QuestBackground-02-01.png
+    - assets/images/QuestBackground-03-01.png
+    - assets/images/QuestBackground-04-01.png
 
   fonts:
     - family: Kanit
