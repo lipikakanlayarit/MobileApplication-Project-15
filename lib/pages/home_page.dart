@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'chat_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -9,14 +10,8 @@ class HomePage extends StatelessWidget {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.white10,
-      ),
-      home: Scaffold(
-      backgroundColor: const Color(0xFFF3EAD3), 
+    return Scaffold(
+      backgroundColor: const Color(0xFFF3EAD3),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -26,47 +21,46 @@ class HomePage extends StatelessWidget {
               decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/images/HomeBackground-01.png'),
-                  fit: BoxFit.cover,
+                  fit: BoxFit.cover,  
                 ),
               ),
               child: Stack(
                 children: [
-                  //  date
+                  // Date
                   Positioned(
-                      top: screenHeight * 0.09,
-                      left: screenWidth * 0.10,
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                DateFormat.d().format(DateTime.now()), 
-                                style: const TextStyle(
-                                  fontFamily: 'KleeOne',
-                                  fontSize: 60,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              
-                            ],
-                          ),
-                          // month
-                          Padding(
-                            padding: const EdgeInsets.only(left:10), 
-                            child: Text(
-                              DateFormat.MMMM().format(DateTime.now()), // เดือน
+                    top: screenHeight * 0.09,
+                    left: screenWidth * 0.10,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              DateFormat.d().format(DateTime.now()),
                               style: const TextStyle(
                                 fontFamily: 'KleeOne',
-                                fontSize: 40,
+                                fontSize: 60,
                                 color: Colors.white,
                               ),
                             ),
+                          ],
+                        ),
+                        // Month
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text(
+                            DateFormat.MMMM().format(DateTime.now()),
+                            style: const TextStyle(
+                              fontFamily: 'KleeOne',
+                              fontSize: 40,
+                              color: Colors.white,
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
+                  ),
 
-                  // รูปกระต่าย
+                  // Bunny Image
                   Positioned(
                     bottom: screenHeight * 0.05,
                     right: screenWidth * 0.05,
@@ -77,13 +71,12 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
 
-                  // (It's gonna be okay)
+                  // "It's gonna be okay"
                   Positioned(
                     top: screenHeight * 0.05,
                     right: screenWidth * 0.12,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 25, vertical: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 16),
                       decoration: BoxDecoration(
                         color: const Color(0xFF0E315A),
                         borderRadius: BorderRadius.circular(100),
@@ -104,40 +97,42 @@ class HomePage extends StatelessWidget {
             ),
           ),
 
-          // "How do you feel"
+          // "How do you feel" Button
           Expanded(
             flex: 1,
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05, vertical: screenHeight * 0.02),
-              // padding: EdgeInsets.all(screenHeight * 0.02),
-              decoration: BoxDecoration(
-                color:  Color.fromRGBO(183, 202, 121,1),
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Color.fromRGBO(87, 113, 112, 0.5),
-                    offset: const Offset(7, 9), 
-                    blurRadius: 0, 
-                    // spreadRadius: 5, 
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ChatPage()),
+                );
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(
+                  horizontal: screenWidth * 0.05, 
+                  vertical: screenHeight * 0.02),
+                decoration: BoxDecoration(
+                  color: const Color.fromRGBO(183, 202, 121, 1),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color.fromRGBO(87, 113, 112, 0.5),
+                      offset: const Offset(7, 9),
+                      blurRadius: 0,
+                    ),
+                  ],
+                ),
+                child: const Center(
+                  child: Text(
+                    "I'm Always Here \n to listen your feeling",
+                    style: TextStyle(
+                      fontFamily: 'KleeOne',
+                      fontSize: 30,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  // BoxShadow(
-                  //   color: Color.fromRGBO(87, 113, 112, 0.6), 
-                  //   offset: Offset(0, 10), 
-                  //   blurRadius: 0,
-                  //   spreadRadius: 5,
-                  // ),
-                ],
-              ),
-              child: const Center(
-                child: Text(
-                  "How do you feel,\nI'm Always Here.",
-                  style: TextStyle(
-                    fontFamily: 'KleeOne',
-                    fontSize: 30,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                  textAlign: TextAlign.center,
                 ),
               ),
             ),
@@ -148,10 +143,12 @@ class HomePage extends StatelessWidget {
             flex: 1,
             child: Container(
               width: screenWidth,
-               margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05, vertical: screenHeight * 0.02),
+              margin: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.05, 
+                vertical: screenHeight * 0.02),
               padding: EdgeInsets.all(screenWidth * 0.03),
               decoration: BoxDecoration(
-                color:  Color.fromRGBO(183, 202, 121,1),
+                color: const Color.fromRGBO(183, 202, 121, 1),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
@@ -202,8 +199,6 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-    ),
-  );
+    );
   }
 }
-
