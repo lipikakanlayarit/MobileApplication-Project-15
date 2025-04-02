@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_project/bottom_navigationbar/navigation_page.dart';
 
-
 void main() {
   runApp(const MyApp());
 }
