@@ -33,6 +33,7 @@ flutter:
     - assets/images/QuestBackground-02-01.png
     - assets/images/QuestBackground-03-01.png
     - assets/images/QuestBackground-04-01.png
+    - assets/images/HomeBackground.png
 
   fonts:
     - family: Kanit

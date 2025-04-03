@@ -134,10 +134,11 @@ void filterByCategory(String category) {
                           hintText: 'Search articles...',
                           prefixIcon: const Icon(Icons.search),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
                           ),
                           filled: true,
-                          fillColor: Colors.white,
+                          fillColor: const Color.fromARGB(59, 0, 0, 0),
                         ),
                         onChanged: filterArticles,
                       ),
@@ -238,7 +239,7 @@ void filterByCategory(String category) {
                         },
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 25),
                   // Filter Buttons
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -424,22 +425,40 @@ void filterByCategory(String category) {
   }
 }
 
-// Filter Button Widget
 class FilterButton extends StatelessWidget {
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const FilterButton({required this.label, required this.isSelected, required this.onTap, Key? key}) : super(key: key);
+  const FilterButton({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onTap,
       style: ElevatedButton.styleFrom(
-        backgroundColor: isSelected ? Colors.brown : Colors.grey[400],
+        backgroundColor: isSelected
+            ? Colors.brown 
+            : Colors.transparent,
+        side: BorderSide(
+          color: Colors.brown, 
+          width: 2,
+        ),
+        elevation: 0, 
+        shadowColor: Colors.transparent
       ),
-      child: Text(label, style: TextStyle(color: Colors.white)),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: isSelected ? Colors.white : Colors.brown, // ✅ ปรับสีตัวหนังสือ
+        ),
+      ),
     );
   }
 }
+

@@ -11,189 +11,249 @@ class HomePage extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3EAD3),
+      backgroundColor: const Color.fromARGB(255, 184, 132, 108),
       body: Column(
         children: <Widget>[
-          Expanded(
-            flex: 2,
-            child: Container(
-              width: screenWidth,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/HomeBackground-01.png'),
-                  fit: BoxFit.cover,  
-                ),
-              ),
-              child: Stack(
+          HeaderSection(screenWidth: screenWidth, screenHeight: screenHeight),
+          BottomSection(screenWidth: screenWidth, screenHeight: screenHeight),
+        ],
+      ),
+    );
+  }
+}
+
+// Header Section: Date, Background Image, "It's gonna be okay"
+class HeaderSection extends StatelessWidget {
+  final double screenWidth;
+  final double screenHeight;
+
+  const HeaderSection({
+    required this.screenWidth,
+    required this.screenHeight,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: 2,
+      child: Container(
+        width: screenWidth,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/HomeBackground.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Stack(
+          children: [
+            // Date and Month
+            Positioned(
+              top: screenHeight * 0.02,
+              left: screenWidth * 0.11,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Date
-                  Positioned(
-                    top: screenHeight * 0.09,
-                    left: screenWidth * 0.10,
+                  Text(
+                    DateFormat('MM').format(DateTime.now()),  // Displaying month/year
+                    style: const TextStyle(
+                      fontFamily: 'KleeOne',
+                      fontSize: 100,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            Positioned(
+              top: screenHeight * 0.15,
+              left: screenWidth * 0.15,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    DateFormat.MMMM().format(DateTime.now()),
+                    style: const TextStyle(
+                      fontFamily: 'KleeOne',
+                      fontSize: 40,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Bunny Image
+            Positioned(
+              bottom: screenHeight * 0.02,
+              right: screenWidth * 0.02,
+              child: Image.asset(
+                'assets/images/normal-01.png',
+                width: screenWidth * 0.6,
+                height: screenWidth * 0.6,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class BottomSection extends StatelessWidget {
+  final double screenWidth;
+  final double screenHeight;
+
+  const BottomSection({
+    required this.screenWidth,
+    required this.screenHeight,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: screenHeight * 0.51,
+      padding: const EdgeInsets.all(2),
+      decoration: const BoxDecoration(
+        color: Color.fromARGB(255, 253, 242, 210),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      child: Column(
+        children: [
+          FeelButtonSection(screenWidth: screenWidth, screenHeight: screenHeight),
+          SizedBox(height: 10),  // Space between sections, can adjust this
+          TodayMoodSection(screenWidth: screenWidth, screenHeight: screenHeight),
+        ],
+      ),
+    );
+  }
+}
+
+class FeelButtonSection extends StatelessWidget {
+  final double screenWidth;
+  final double screenHeight;
+
+  const FeelButtonSection({
+    required this.screenWidth,
+    required this.screenHeight,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(  // Added GestureDetector to handle tap
+      onTap: () {
+        // Navigate to the ChatPage when tapped
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ChatPage()),
+        );
+      },
+      child: Container(
+        height: screenHeight * 0.22,  // Set a fixed height, you can adjust the value as needed
+        margin: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.05,
+          vertical: screenHeight * 0.02,
+        ),
+        decoration: BoxDecoration(
+          color: const Color.fromRGBO(183, 202, 121, 1),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: const Color.fromRGBO(87, 113, 112, 0.5),
+              offset: const Offset(7, 9),
+              blurRadius: 0,
+            ),
+          ],
+        ),
+        child: const Center(
+          child: Text(
+            "I'm Always Here \n to listen your feeling",
+            style: TextStyle(
+              fontFamily: 'KleeOne',
+              fontSize: 30,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class TodayMoodSection extends StatelessWidget {
+  final double screenWidth;
+  final double screenHeight;
+
+  const TodayMoodSection({
+    required this.screenWidth,
+    required this.screenHeight,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: screenHeight * 0.2,  // Set a fixed height, adjust this as necessary
+      width: screenWidth,
+      margin: EdgeInsets.symmetric(
+        horizontal: screenWidth * 0.05,
+        vertical: screenHeight * 0.01,
+      ),
+      padding: EdgeInsets.all(screenWidth * 0.03),
+      decoration: BoxDecoration(
+        color: const Color.fromRGBO(183, 202, 121, 1),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Today Mood",
+            style: TextStyle(
+              fontFamily: 'Kanit',
+              fontSize: 25,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 5),
+          // Make this section horizontally scrollable
+          Container(
+            padding: EdgeInsets.all(screenHeight * 0.025),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: List.generate(6, (index) {
+                  return Container(
+                    margin: EdgeInsets.only(right: screenWidth * 0.05),
                     child: Column(
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              DateFormat.d().format(DateTime.now()),
-                              style: const TextStyle(
-                                fontFamily: 'KleeOne',
-                                fontSize: 60,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
+                        Image.asset(
+                          'assets/images/normal-01.png',
+                          width: screenWidth * 0.12,
+                          height: screenWidth * 0.12,
                         ),
-                        // Month
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Text(
-                            DateFormat.MMMM().format(DateTime.now()),
-                            style: const TextStyle(
-                              fontFamily: 'KleeOne',
-                              fontSize: 40,
-                              color: Colors.white,
-                            ),
+                        const SizedBox(height: 2),
+                        Text(
+                          "${10 + index * 2}:00",
+                          style: const TextStyle(
+                            fontFamily: 'Kanit',
+                            fontSize: 14,
+                            color: Colors.black,
                           ),
                         ),
                       ],
                     ),
-                  ),
-
-                  // Bunny Image
-                  Positioned(
-                    bottom: screenHeight * 0.05,
-                    right: screenWidth * 0.05,
-                    child: Image.asset(
-                      'assets/images/normal-01.png',
-                      width: screenWidth * 0.5,
-                      height: screenWidth * 0.5,
-                    ),
-                  ),
-
-                  // "It's gonna be okay"
-                  Positioned(
-                    top: screenHeight * 0.05,
-                    right: screenWidth * 0.12,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 16),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF0E315A),
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: const Text(
-                        "It's gonna\nbe okay",
-                        style: TextStyle(
-                          fontFamily: 'KleeOne',
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // "How do you feel" Button
-          Expanded(
-            flex: 1,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ChatPage()),
-                );
-              },
-              child: Container(
-                margin: EdgeInsets.symmetric(
-                  horizontal: screenWidth * 0.05, 
-                  vertical: screenHeight * 0.02),
-                decoration: BoxDecoration(
-                  color: const Color.fromRGBO(183, 202, 121, 1),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color.fromRGBO(87, 113, 112, 0.5),
-                      offset: const Offset(7, 9),
-                      blurRadius: 0,
-                    ),
-                  ],
-                ),
-                child: const Center(
-                  child: Text(
-                    "I'm Always Here \n to listen your feeling",
-                    style: TextStyle(
-                      fontFamily: 'KleeOne',
-                      fontSize: 30,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // Today Mood
-          Expanded(
-            flex: 1,
-            child: Container(
-              width: screenWidth,
-              margin: EdgeInsets.symmetric(
-                horizontal: screenWidth * 0.05, 
-                vertical: screenHeight * 0.02),
-              padding: EdgeInsets.all(screenWidth * 0.03),
-              decoration: BoxDecoration(
-                color: const Color.fromRGBO(183, 202, 121, 1),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Today Mood",
-                    style: TextStyle(
-                      fontFamily: 'Kanit',
-                      fontSize: 20,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Container(
-                    padding: EdgeInsets.all(screenHeight * 0.025),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: List.generate(6, (index) {
-                        return Column(
-                          children: [
-                            Image.asset(
-                              'assets/images/normal-01.png',
-                              width: screenWidth * 0.08,
-                              height: screenWidth * 0.08,
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              "${10 + index * 2}:00",
-                              style: const TextStyle(
-                                fontFamily: 'Kanit',
-                                fontSize: 14,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        );
-                      }),
-                    ),
-                  ),
-                ],
+                  );
+                }),
               ),
             ),
           ),

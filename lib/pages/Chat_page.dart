@@ -136,7 +136,7 @@ class _ChatScreenState extends State<ChatPage> {
           if (_isEmojiPickerVisible)
             Container(
               padding: EdgeInsets.all(8.0),
-              color: Colors.grey[200],
+              color:Color.fromARGB(255, 255, 249, 230),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -146,7 +146,7 @@ class _ChatScreenState extends State<ChatPage> {
                       onTap: () => _selectEmoji(emoji),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Image.asset(emoji, width: 40, height: 40),
+                        child: Image.asset(emoji, width: 50, height: 50),
                       ),
                     );
                   }).toList(),

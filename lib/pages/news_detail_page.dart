@@ -9,9 +9,9 @@ class NewsDetailPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFFDF2D2),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFDF2D2),
+        backgroundColor: const Color.fromARGB(255, 90, 78, 66),
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -23,20 +23,29 @@ class NewsDetailPage extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.network(article['urlToImage'])),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
+              Text(
+                '${article['author'] ?? 'Unknown Author'}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey
+                ),
+              ),
+              const SizedBox(height: 6),
               Text(
                 article['title'] ?? 'No title available',
                 style: const TextStyle(
-                  fontSize: 22,
+                  fontSize: 28,
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              
               const SizedBox(height: 16),
               Row(
                 children: [
                   ElevatedButton.icon(
                     onPressed: () {},
-                    icon: const Icon(Icons.thumb_up),
+                    icon: const Icon(Icons.thumb_up, color: Color.fromARGB(255, 90, 78, 66),),
                     label: const Text('Like'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
@@ -49,7 +58,7 @@ class NewsDetailPage extends StatelessWidget {
                   const SizedBox(width: 10),
                   ElevatedButton.icon(
                     onPressed: () {},
-                    icon: const Icon(Icons.bookmark),
+                    icon: const Icon(Icons.bookmark,color: Color.fromARGB(255, 90, 78, 66),),
                     label: const Text('Watch Later'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
