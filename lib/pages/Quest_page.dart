@@ -243,14 +243,18 @@ class CheckboxTile extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 8),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         decoration: BoxDecoration(
-          color: isChecked ? Colors.green : Colors.brown,
+          color: isChecked ?   Color.fromARGB(255, 184, 220, 116) : Colors.brown,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           children: [
             _buildCheckbox(),
-            const SizedBox(width: 12),
-            Expanded(child: Text(title, style: const TextStyle(color: Colors.white, fontSize: 20))),
+            const SizedBox(width: 25),
+            Expanded(child: Text(
+              title, 
+              style: TextStyle(
+                color: isChecked ? Colors.black : Colors.white,
+                fontSize: 18,))),
           ],
         ),
       ),
@@ -258,6 +262,11 @@ class CheckboxTile extends StatelessWidget {
   }
 
   Widget _buildCheckbox() {
-    return Icon(isChecked ? Icons.check_box : Icons.check_box_outline_blank, color: Colors.white);
+  return Icon(
+    isChecked ? Icons.check_rounded : Icons.check_box_outline_blank,
+    color: isChecked ? Colors.green : const Color.fromARGB(255, 255, 255, 255),
+    size: 35, 
+    );
   }
+
 }

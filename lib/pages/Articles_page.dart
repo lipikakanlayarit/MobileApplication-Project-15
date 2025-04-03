@@ -240,6 +240,7 @@ void filterByCategory(String category) {
                       ),
                     ),
                     const SizedBox(height: 25),
+                    
                   // Filter Buttons
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
