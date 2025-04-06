@@ -22,6 +22,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
     QuestPage(),
     DashboardPage(),
     ProfilePage(),
+    
   ];
 
   @override

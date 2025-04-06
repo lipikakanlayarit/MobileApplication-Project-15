@@ -22,8 +22,9 @@ class DashboardPage extends StatelessWidget {
       "Believe in yourself and all that you are.",
       "Do what makes your soul shine.",
     ];
-
+    
     final String randomQuote = quotes[Random().nextInt(quotes.length)];
+
     return Scaffold(
       backgroundColor: const Color(0xFF5A4E42),
       body: Column(

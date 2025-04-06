@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'chat_page.dart';
+ 
+
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +25,8 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+  
+
 
 // Header Section: Date, Background Image, "It's gonna be okay"
 class HeaderSection extends StatelessWidget {
@@ -54,7 +60,7 @@ class HeaderSection extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    DateFormat('MM').format(DateTime.now()),  // Displaying month/year
+                    DateFormat('dd').format(DateTime.now()),
                     style: const TextStyle(
                       fontFamily: 'KleeOne',
                       fontSize: 100,
