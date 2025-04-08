@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import '/pages/Login_page.dart'; 
-import '/pages/home_page.dart'; 
+import 'package:mobile_project/bottom_navigationbar/navigation_page.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -26,10 +26,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
 
       // Simulate delay before navigating to the LoginPage
-      Future.delayed(const Duration(seconds: 2), () {
+      Future.delayed(const Duration(seconds: 1), () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) =>  LoginPage()),
+          MaterialPageRoute(builder: (context) =>  BottomNavigationPage()),
         );
       });
     }
@@ -114,7 +114,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   ..onTap = () {
                                     Navigator.pushReplacement(
                                       context,
-                                      MaterialPageRoute(builder: (context) =>  LoginPage()),
+                                      MaterialPageRoute(builder: (context) =>  BottomNavigationPage()),
                                     );
                                   },
                               ),
