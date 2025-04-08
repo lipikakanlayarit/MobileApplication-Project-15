@@ -114,7 +114,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   ..onTap = () {
                                     Navigator.pushReplacement(
                                       context,
-                                      MaterialPageRoute(builder: (context) =>  BottomNavigationPage()),
+                                      MaterialPageRoute(builder: (context) =>  LoginPage()),
                                     );
                                   },
                               ),
