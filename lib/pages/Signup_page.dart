@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import '/pages/Login_page.dart'; 
+import '/pages/home_page.dart'; 
 
 class SignUpScreen extends StatefulWidget {
   @override

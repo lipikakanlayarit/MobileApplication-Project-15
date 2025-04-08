@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '/pages/home_page.dart';
+import 'package:mobile_project/bottom_navigationbar/navigation_page.dart';
 import '/pages/Signup_page.dart';
 import 'package:flutter/gestures.dart';
+
 
 class LoginPage extends StatefulWidget {
   @override _LoginPageState createState() => _LoginPageState();
@@ -49,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
       if (_usernameController.text == username && _passwordController.text == password) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) =>  HomePage()), // Navigate to HomePage after successful login
+          MaterialPageRoute(builder: (context) =>  BottomNavigationPage()), // Navigate to HomePage after successful login
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
