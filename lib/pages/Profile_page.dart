@@ -69,15 +69,7 @@ class ProfilePage extends StatelessWidget {
                               color: Colors.black87,
                             ),
                           ),
-                          Text(
-                            "Kanlayachanpong",
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontFamily: 'Kanit',
-                              fontWeight: FontWeight.normal,
-                              color: Colors.black87,
-                            ),
-                          ),
+                          
                         ],
                       ),
                     ),

@@ -169,7 +169,7 @@ class FeelButtonSection extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: const Color.fromRGBO(87, 113, 112, 0.5),
+              color: const Color(0x80577170),
               offset: const Offset(7, 9),
               blurRadius: 0,
             ),
