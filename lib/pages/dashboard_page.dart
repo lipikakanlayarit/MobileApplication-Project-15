@@ -29,14 +29,14 @@ class DashboardPage extends StatelessWidget {
       backgroundColor: const Color(0xFF5A4E42),
       body: Column(
         children: <Widget>[
-           Container(
-            margin: EdgeInsets.only(top: 20.0),
-            child: Text(
+          Container(
+            margin: const EdgeInsets.only(top: 20.0),
+            child: const Text(
               "Dashboard",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w500,
-                color: const Color(0xFFFDF2D2),
+                color: Color(0xFFFDF2D2),
               ),
               textAlign: TextAlign.center,
             ),
@@ -47,80 +47,185 @@ class DashboardPage extends StatelessWidget {
               child: BottomSection(weekRank: weekRank, randomQuote: randomQuote),
             ),
           ),
+
         ],
       ),
     );
   }
 }
 
-class HeaderSection extends StatelessWidget {
+class HeaderSection extends StatefulWidget {
   final DateTime currentDate;
   const HeaderSection({required this.currentDate});
 
   @override
+  State<HeaderSection> createState() => _HeaderSectionState();
+}
+
+class _HeaderSectionState extends State<HeaderSection> {
+  late DateTime _selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDate = widget.currentDate;
+  }
+
+  void _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2200),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: const ColorScheme.light(
+            primary: Color(0xFF556E59), 
+            onPrimary: Colors.white,   
+            surface: Color(0xFFB7CA79),  
+            onSurface:Colors.white, 
+            secondary: Color(0xFFFF6B6B),
+            onBackground: Color(0xFFB7CA79), 
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              foregroundColor: Color(0xFF556E59), 
+            ),
+          ),
+        ),
+          child: child!,
+        );
+      },
+    );
+    
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(18),
+      margin: const EdgeInsets.all(18),
       height: 180,
       decoration: BoxDecoration(
         color: const Color(0xFFB7CA79),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: EasyDateTimeLine(
-        initialDate: currentDate,
-        headerProps: const EasyHeaderProps(
-          monthPickerType: MonthPickerType.dropDown,
-          monthStyle: TextStyle(
-            color: Color(0xFF001A33),
-            fontFamily: 'Kanit',
-            fontSize: 16,
+      child: Column(
+        children: [
+          // Month header with navigation buttons
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF001A33)),
+                  onPressed: () {
+                    final previousMonth = DateTime(_selectedDate.year, _selectedDate.month - 1, 1);
+                    setState(() {
+                      _selectedDate = previousMonth;
+                    });
+                  },
+                ),
+                TextButton(
+                  onPressed: () => _selectDate(context),
+                  child: Row(
+                    children: [
+                      Text(
+                        _getMonthName(_selectedDate.month),
+                        style: const TextStyle(
+                          color: Color(0xFF001A33),
+                          fontFamily: 'Kanit',
+                          fontSize: 22,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.arrow_forward_ios, color: Color(0xFF001A33)),
+                  onPressed: () {
+                    final nextMonth = DateTime(_selectedDate.year, _selectedDate.month + 1, 1);
+                    setState(() {
+                      _selectedDate = nextMonth;
+                    });
+                  },
+                ),
+              ],
+            ),
           ),
-        ),
-        dayProps: EasyDayProps(
-                  width: 55,
-                  height: 105,
-                  dayStructure: DayStructure.dayStrDayNum,
-                  activeDayStyle: const DayStyle(
-                    decoration: BoxDecoration(
-                      color: Color(0xFF556E59),
-                      borderRadius: BorderRadius.all(Radius.circular(100)),
-                    ),
-      dayNumStyle: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Kanit',
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    dayStrStyle: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Kanit',
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                    ),
+          // Date timeline
+          Expanded(
+            child: EasyDateTimeLine(
+              initialDate: _selectedDate,
+              activeColor: const Color(0xFF556E59),
+              headerProps: const EasyHeaderProps(
+                showHeader: false,
+              ),
+              dayProps: EasyDayProps(
+                width: 55,
+                height: 100,
+                activeDayStrStyle: const TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Kanit',
+                  fontSize: 16,
+                ),
+                activeDayNumStyle: const TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Kanit',
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+                inactiveDayStrStyle: const TextStyle(
+                  color: Color(0xFF001A33),
+                  fontFamily: 'Kanit',
+                  fontSize: 16,
+                ),
+                inactiveDayNumStyle: const TextStyle(
+                  color: Color(0xFF001A33),
+                  fontFamily: 'Kanit',
+                  fontSize: 20,
+                ),
+                inactiveDayStyle: DayStyle(
+                  decoration: const BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                    border: Border.fromBorderSide(BorderSide(color: Colors.transparent)),
                   ),
-                  inactiveDayStyle: const DayStyle(
-                    decoration: BoxDecoration(),
-                    dayNumStyle: TextStyle(
-                      color: Color(0xFF001A33),
-                      fontSize: 20,
-                      fontFamily: 'Kanit',
-                    ),
-                    dayStrStyle: TextStyle(
-                      color: Color(0xFF001A33),
-                      fontSize: 20,
-                      fontFamily: 'Kanit',
-                    ),
+                ),
+                activeDayStyle: DayStyle(
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF556E59),
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
                   ),
-                    todayStyle: const DayStyle(
-                    decoration: BoxDecoration(
-                      border: Border.fromBorderSide(
-                        BorderSide(color: Color.fromRGBO(183, 202, 121, 1), width: 2),
-                    ),
-               ),
-           ),
-        ),
+                ),
+              ),
+              onDateChange: (selectedDate) {
+                setState(() {
+                  _selectedDate = selectedDate;
+                });
+              },
+            ),
+          ),
+        ],
       ),
-   );
+    );
+  }
+
+  String _getMonthName(int month) {
+    const monthNames = [
+      'January', 'February', 'March', 'April',
+      'May', 'June', 'July', 'August',
+      'September', 'October', 'November', 'December'
+    ];
+    return monthNames[month - 1];
   }
 }
 
@@ -133,8 +238,7 @@ class BottomSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.8,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: const BoxDecoration(
         color: Color(0xFFF8EFD4),
         borderRadius: BorderRadius.only(
@@ -147,6 +251,7 @@ class BottomSection extends StatelessWidget {
           MoodStatsCard(weekRank: weekRank),
           const SizedBox(height: 20),
           QuoteCard(randomQuote: randomQuote),
+          const SizedBox(height: 80), 
         ],
       ),
     );
@@ -155,24 +260,25 @@ class BottomSection extends StatelessWidget {
 
 class MoodStatsCard extends StatelessWidget {
   final List<Map<String, dynamic>> weekRank;
+  
   Color _getMoodColor(String mood) {
     switch (mood) {
       case 'Sad':
-        return Color.fromRGBO(249, 221, 138, 1);
+        return const Color.fromRGBO(249, 221, 138, 1);
       case 'Nervous':
-        return Color.fromRGBO(224, 223, 218, 1);
+        return const Color.fromRGBO(224, 223, 218, 1);
       case 'Happy':
-        return Color.fromRGBO(171, 120, 103, 1);
+        return const Color.fromRGBO(171, 120, 103, 1);
       case 'Angry':
-        return Colors.red;
+        return Colors.red.shade200;
       case 'Focus':
-        return Colors.green;
+        return Colors.green.shade200;
       default:
         return Colors.grey;
-
     }
   }
-    MoodStatsCard({required this.weekRank});
+  
+  const MoodStatsCard({required this.weekRank});
 
   @override
   Widget build(BuildContext context) {
@@ -190,166 +296,159 @@ class MoodStatsCard extends StatelessWidget {
             style: TextStyle(
               fontFamily: 'Kanit',
               fontSize: 24,
-              color:  Color(0xFF001A33),
+              color: Color(0xFF001A33),
             ),
           ),
-          const SizedBox(height: 5),
-          // weekrank list 
-                  Row(
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Rank List Container
+              Expanded(
+                child: Container(
+                  height: 200,
+                  
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Rank List Container
-                      Expanded(
-                        child: Container(
-                          width: 150,
-                          height: 200,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: weekRank.map((item) => Container(
-                              margin: const EdgeInsets.all(5),
-                              child: Row(
-                                children: [
-                                  Text('${item['rank']}.'),
-                                  const SizedBox(width: 5),
-                                  Image.asset(item['emoji'], width: 30, height: 30),
-                                  const SizedBox(width: 5),
-                                  Text(item['mood']),
-                                ],
-                              ),
-                            )).toList(),
-                          ),
-                        ),
+                    children: weekRank.map((item) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 1.0),
+                      child: Row(
+                        children: [
+                          Text('${item['rank']}.', style: const TextStyle(fontSize: 14)),
+                          const SizedBox(width: 5),
+                          Image.asset(item['emoji'], width: 30, height: 30),
+                          const SizedBox(width: 5),
+                          Text(item['mood'], style: const TextStyle(fontSize: 14)),
+                        ],
                       ),
-
-
-                      Expanded(
-                        flex: 2,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: weekRank.take(3).map<Widget>((item) {
-                  return Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: Column(
-                      children: [
-                        Stack(
-                          alignment: Alignment.bottomCenter, 
-                          children: [
-                            // Bar container
-                            Container(
-                              width: 60,
-                              height: 200, 
-                              alignment: Alignment.bottomCenter,
-                              child: Container(
-                                // width: 60,
-                                height: item['percentage'] * 1.55, 
-                                decoration: BoxDecoration(
-                                  color: _getMoodColor(item['mood']),
-                                  borderRadius: BorderRadius.circular(0),
-                                ),
-                              ),
-                            ),
-                            
-                            Positioned(
-                              bottom: item['percentage'] * 1.6, 
-                              child: Image.asset(
-                                item['emoji'],
-                                width: 70,
-                                height: 70,
-                              ),
-                            ),
-                            
-                            Positioned(
-                              bottom: item['percentage'] * 1.2 , 
-                              child: Text(
-                                '${item['percentage']}%',
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
+                    )).toList(),
+                  ),
+                ),
               ),
-            ),
-           ],
-         ),
+              const SizedBox(width: 10),
+              // Bar Chart Container
+              Expanded(
+                flex: 2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: weekRank.take(3).map<Widget>((item) {
+                    return Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: Column(
+                        children: [
+                          Stack(
+                            alignment: Alignment.bottomCenter, 
+                            children: [
+                              // Bar container
+                              Container(
+                                width: 60,
+                                height: 200, 
+                                alignment: Alignment.bottomCenter,
+                                child: Container(
+                                  width: 60,
+                                  height: item['percentage'] * 1.55, 
+                                  decoration: BoxDecoration(
+                                    color: _getMoodColor(item['mood']),
+                                    // borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+                                  ),
+                                ),
+                              ),
+                              
+                              Positioned(
+                                bottom: item['percentage'] * 1.6, 
+                                child: Image.asset(
+                                  item['emoji'],
+                                  width: 70,
+                                  height: 70,
+                                ),
+                              ),
+                              
+                              Positioned(
+                                bottom: item['percentage'] * 1.2, 
+                                child: Text(
+                                  '${item['percentage']}%',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
-     );
-    }
+    );
   }
+}
   
-  class QuoteCard extends StatelessWidget {
-    final String randomQuote;
-    const QuoteCard({required this.randomQuote});
+class QuoteCard extends StatelessWidget {
+  final String randomQuote;
+  const QuoteCard({required this.randomQuote});
 
-    @override
-    Widget build(BuildContext context) {
-      return Container(
-        padding: const EdgeInsets.all(16),
-        margin: const EdgeInsets.only(bottom: 5),
-        decoration: BoxDecoration(
-          color: const Color(0xFFB7CA79),
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Quote For Today',
-              style: TextStyle(
-                fontFamily: 'Kanit',
-                fontSize: 24,
-                fontWeight: FontWeight.normal,
-                color:  Color(0xFF001A33),
-              ),
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 5),
+      decoration: BoxDecoration(
+        color: const Color(0xFFB7CA79),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Quote For Today',
+            style: TextStyle(
+              fontFamily: 'Kanit',
+              fontSize: 24,
+              fontWeight: FontWeight.normal,
+              color: Color(0xFF001A33),
             ),
-            const SizedBox(height: 8),
-            Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          width: 150,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                            Text(
-                              randomQuote,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontFamily: 'Kanit',
-                                fontSize: 20,
-                                fontStyle: FontStyle.normal,
-                                color:  Color(0xFF001A33),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            width: double.infinity,
+            height: 150,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    randomQuote,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontFamily: 'Kanit',
+                      fontSize: 20,
+                      fontStyle: FontStyle.normal,
+                      color: Color(0xFF001A33),
                     ),
                   ),
-                 ],
-                ),
-              ],
+                ],
+              ),
             ),
-          );
-         }
-       }
+          ),
+        ],
+      ),
+    );
+  }
+}
+
