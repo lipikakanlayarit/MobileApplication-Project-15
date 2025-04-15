@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'chat_page.dart';
+import 'package:mobile_project/pages/Chat_page.dart';
  
-
-
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +151,7 @@ class FeelButtonSection extends StatelessWidget {
         // Navigate to the ChatPage when tapped
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ChatPage()),
+          MaterialPageRoute(builder: (context) => ChatPage(userId: 1)),
         );
       },
       child: Container(
