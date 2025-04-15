@@ -64,8 +64,9 @@ class HeaderSection extends StatefulWidget {
 
 class _HeaderSectionState extends State<HeaderSection> {
   late DateTime _selectedDate;
-
-  @override
+  bool isWeekView = false;
+  
+  @override 
   void initState() {
     super.initState();
     _selectedDate = widget.currentDate;
@@ -126,9 +127,9 @@ class _HeaderSectionState extends State<HeaderSection> {
                 IconButton(
                   icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF001A33)),
                   onPressed: () {
-                    final previousMonth = DateTime(_selectedDate.year, _selectedDate.month - 1, 1);
                     setState(() {
-                      _selectedDate = previousMonth;
+                      // Move one week back
+                      _selectedDate = _selectedDate.subtract(Duration(days: 7));
                     });
                   },
                 ),
@@ -152,9 +153,9 @@ class _HeaderSectionState extends State<HeaderSection> {
                 IconButton(
                   icon: const Icon(Icons.arrow_forward_ios, color: Color(0xFF001A33)),
                   onPressed: () {
-                    final nextMonth = DateTime(_selectedDate.year, _selectedDate.month + 1, 1);
                     setState(() {
-                      _selectedDate = nextMonth;
+                      // Move one week forward
+                      _selectedDate = _selectedDate.add(Duration(days: 7));
                     });
                   },
                 ),
@@ -164,6 +165,7 @@ class _HeaderSectionState extends State<HeaderSection> {
           // Date timeline
           Expanded(
             child: EasyDateTimeLine(
+              key: ValueKey(_selectedDate),
               initialDate: _selectedDate,
               activeColor: const Color(0xFF556E59),
               headerProps: const EasyHeaderProps(
@@ -451,4 +453,3 @@ class QuoteCard extends StatelessWidget {
     );
   }
 }
-

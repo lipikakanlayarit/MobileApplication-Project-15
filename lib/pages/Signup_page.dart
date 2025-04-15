@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '/pages/Login_page.dart';
 import 'package:mobile_project/bottom_navigationbar/navigation_page.dart';
+import 'package:mobile_project/models/database_helper.dart'; // Import the database helper
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -17,60 +18,107 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  
+  final DatabaseHelper _dbHelper = DatabaseHelper(); // Instance of database helper
   bool _obscurePassword = true;
+  bool _isLoading = false;
 
-  void _validateForm() {
+  Future<void> _validateForm() async {
     if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Sign Up Successful!'),
-          duration: Duration(seconds: 4),
-        ),
-      );
-      Future.delayed(const Duration(seconds: 1), () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => BottomNavigationPage()),
-        );
+      setState(() {
+        _isLoading = true;
       });
+      
+      try {
+        // Check if user with this email already exists
+        final existingUser = await _dbHelper.getUserByEmail(_emailController.text);
+        
+        if (existingUser != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Email already exists, please login instead'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else {
+          // Create new user record
+          final userData = {
+            'username': _usernameController.text,
+            'dob': _dateController.text,
+            'phone': _phoneController.text,
+            'email': _emailController.text,
+            'password': _passwordController.text, // In production, use proper hashing
+          };
+          
+          final userId = await _dbHelper.insertUser(userData);
+          
+          if (userId > 0) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Sign Up Successful!'),
+                backgroundColor: Color(0xFFB7CA79),
+                duration: Duration(seconds: 2),
+              ),
+            );
+            
+            Future.delayed(const Duration(seconds: 1), () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => BottomNavigationPage()),
+              );
+            });
+          } else {
+            throw Exception('Failed to create account');
+          }
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
   Future<void> _selectDate(BuildContext context) async {
-  final DateTime? picked = await showDatePicker(
-    context: context,
-    initialDate: DateTime(2000),
-    firstDate: DateTime(1900),
-    lastDate: DateTime.now(),
-    builder: (context, child) {
-      return Theme(
-        data: ThemeData.light().copyWith(
-          colorScheme: const ColorScheme.light(
-            primary: Color(0xFF556E59), 
-            onPrimary: Colors.white,   
-            surface: Color(0xFFB7CA79),  
-            onSurface:Colors.white, 
-            secondary: Color(0xFFFF6B6B),
-            onBackground: Color(0xFFB7CA79), 
-          ),
-          textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(
-              foregroundColor: Color(0xFF556E59), 
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime(2000),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF556E59), 
+              onPrimary: Colors.white,   
+              surface: Color(0xFFB7CA79),  
+              onSurface: Colors.white, 
+              secondary: Color(0xFFFF6B6B),
+              onBackground: Color(0xFFB7CA79), 
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Color(0xFF556E59), 
+              ),
             ),
           ),
-        ),
-        child: child!,
-      );
-    },
-  );
-  if (picked != null) {
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
       setState(() {
         _dateController.text = DateFormat('dd/MM/yyyy').format(picked);
-    });
+      });
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -238,17 +286,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: _validateForm,
+                          onPressed: _isLoading ? null : _validateForm,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFB7CA79),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: const Text(
-                            'Sign Up',
-                            style: TextStyle(color: Colors.black),
-                          ),
+                          child: _isLoading 
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.black,
+                                ),
+                              )
+                            : const Text(
+                                'Sign Up',
+                                style: TextStyle(color: Colors.black),
+                              ),
                         ),
                       ),
                       const SizedBox(height: 10),
