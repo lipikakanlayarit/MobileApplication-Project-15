@@ -111,4 +111,31 @@ class DatabaseHelper {
     Database db = await database;
     return await db.delete('messages');
   }
+
+  Future<List<Map<String, dynamic>>> getMessagesForToday() async {
+    Database db = await database;
+
+    // สร้างวันที่ปัจจุบันในรูปแบบ YYYY-MM-DD (ต้นวัน)
+    final DateTime now = DateTime.now();
+    final String todayStart =
+        DateTime(now.year, now.month, now.day).toIso8601String();
+    final String todayEnd =
+        DateTime(
+          now.year,
+          now.month,
+          now.day,
+          23,
+          59,
+          59,
+          999,
+        ).toIso8601String();
+
+    // ดึงข้อความในวันปัจจุบัน
+    return await db.query(
+      'messages',
+      where: 'timestamp BETWEEN ? AND ?',
+      whereArgs: [todayStart, todayEnd],
+      orderBy: 'timestamp ASC',
+    );
+  }
 }

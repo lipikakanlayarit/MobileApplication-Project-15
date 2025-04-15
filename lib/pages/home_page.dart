@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_project/pages/Chat_page.dart';
- 
+import 'package:mobile_project/models/db_helper.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -21,10 +22,7 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-  
 
-
-// Header Section: Date, Background Image, "It's gonna be okay"
 class HeaderSection extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;
@@ -48,7 +46,6 @@ class HeaderSection extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // Date and Month
             Positioned(
               top: screenHeight * 0.02,
               left: screenWidth * 0.11,
@@ -66,7 +63,6 @@ class HeaderSection extends StatelessWidget {
                 ],
               ),
             ),
-
             Positioned(
               top: screenHeight * 0.15,
               left: screenWidth * 0.15,
@@ -85,8 +81,6 @@ class HeaderSection extends StatelessWidget {
                 ],
               ),
             ),
-
-            // Bunny Image
             Positioned(
               bottom: screenHeight * 0.02,
               right: screenWidth * 0.02,
@@ -127,7 +121,7 @@ class BottomSection extends StatelessWidget {
       child: Column(
         children: [
           FeelButtonSection(screenWidth: screenWidth, screenHeight: screenHeight),
-          SizedBox(height: 10),  // Space between sections, can adjust this
+          SizedBox(height: 10),
           TodayMoodSection(screenWidth: screenWidth, screenHeight: screenHeight),
         ],
       ),
@@ -146,16 +140,15 @@ class FeelButtonSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(  // Added GestureDetector to handle tap
+    return GestureDetector(
       onTap: () {
-        // Navigate to the ChatPage when tapped
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => ChatPage(userId: 1)),
         );
       },
       child: Container(
-        height: screenHeight * 0.22,  // Set a fixed height, you can adjust the value as needed
+        height: screenHeight * 0.22,
         margin: EdgeInsets.symmetric(
           horizontal: screenWidth * 0.05,
           vertical: screenHeight * 0.02,
@@ -188,7 +181,7 @@ class FeelButtonSection extends StatelessWidget {
   }
 }
 
-class TodayMoodSection extends StatelessWidget {
+class TodayMoodSection extends StatefulWidget {
   final double screenWidth;
   final double screenHeight;
 
@@ -198,15 +191,46 @@ class TodayMoodSection extends StatelessWidget {
   });
 
   @override
+  State<TodayMoodSection> createState() => _TodayMoodSectionState();
+}
+
+class _TodayMoodSectionState extends State<TodayMoodSection> {
+  final DatabaseHelper _dbHelper = DatabaseHelper();
+  List<Map<String, dynamic>> _todayMessages = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTodayMessages();
+  }
+
+  Future<void> _loadTodayMessages() async {
+    try {
+      final messages = await _dbHelper.getMessagesForToday();
+
+      setState(() {
+        _todayMessages = messages;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error loading today messages: \$e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      height: screenHeight * 0.2,  // Set a fixed height, adjust this as necessary
-      width: screenWidth,
+      height: widget.screenHeight * 0.2,
+      width: widget.screenWidth,
       margin: EdgeInsets.symmetric(
-        horizontal: screenWidth * 0.05,
-        vertical: screenHeight * 0.01,
+        horizontal: widget.screenWidth * 0.05,
+        vertical: widget.screenHeight * 0.01,
       ),
-      padding: EdgeInsets.all(screenWidth * 0.03),
+      padding: EdgeInsets.all(widget.screenWidth * 0.03),
       decoration: BoxDecoration(
         color: const Color.fromRGBO(183, 202, 121, 1),
         borderRadius: BorderRadius.circular(16),
@@ -223,42 +247,62 @@ class TodayMoodSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 5),
-          // Make this section horizontally scrollable
-          Container(
-            padding: EdgeInsets.all(screenHeight * 0.025),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(6, (index) {
-                  return Container(
-                    margin: EdgeInsets.only(right: screenWidth * 0.05),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/images/normal-01.png',
-                          width: screenWidth * 0.12,
-                          height: screenWidth * 0.12,
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          "${10 + index * 2}:00",
-                          style: const TextStyle(
-                            fontFamily: 'Kanit',
-                            fontSize: 14,
-                            color: Colors.black,
+          _isLoading
+              ? Center(child: CircularProgressIndicator())
+              : Container(
+                  padding: EdgeInsets.all(widget.screenHeight * 0.025),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: _todayMessages.isEmpty
+                      ? Center(
+                          child: Text(
+                            "No messages today",
+                            style: TextStyle(
+                              fontFamily: 'Kanit',
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        )
+                      : SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: _todayMessages.map((message) {
+                              String timeText = 'Unknown';
+                              try {
+                                final timestamp = DateTime.parse(message['timestamp'] ?? '');
+                                timeText = DateFormat('HH:mm').format(timestamp);
+                              } catch (e) {
+                                print('Error parsing timestamp: \$e');
+                              }
+
+                              return Container(
+                                margin: EdgeInsets.only(right: widget.screenWidth * 0.05),
+                                child: Column(
+                                  children: [
+                                    Image.asset(
+                                      message['emoji_path'] ?? 'assets/images/normal-01.png',
+                                      width: widget.screenWidth * 0.12,
+                                      height: widget.screenWidth * 0.12,
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      timeText,
+                                      style: const TextStyle(
+                                        fontFamily: 'Kanit',
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
                           ),
                         ),
-                      ],
-                    ),
-                  );
-                }),
-              ),
-            ),
-          ),
+                ),
         ],
       ),
     );
