@@ -22,17 +22,6 @@ class DatabaseHelper {
   }
 
   Future _onCreate(Database db, int version) async {
-    // Create users table
-    await db.execute('''
-      CREATE TABLE users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL,
-        password TEXT NOT NULL,
-        date_of_birth TEXT,
-        phone TEXT,
-        email TEXT
-      )
-    ''');
 
     // Create messages table
     await db.execute('''
@@ -48,48 +37,6 @@ class DatabaseHelper {
     ''');
   }
 
-  // User operations
-  Future<int> insertUser(Map<String, dynamic> user) async {
-    Database db = await database;
-    return await db.insert('users', user);
-  }
-
-  Future<Map<String, dynamic>?> getUser(
-    String username,
-    String password,
-  ) async {
-    Database db = await database;
-    List<Map<String, dynamic>> result = await db.query(
-      'users',
-      where: 'username = ? AND password = ?',
-      whereArgs: [username, password],
-    );
-
-    if (result.isNotEmpty) {
-      return result.first;
-    }
-    return null;
-  }
-
-  Future<bool> checkUserExists(String username) async {
-    Database db = await database;
-    List<Map<String, dynamic>> result = await db.query(
-      'users',
-      where: 'username = ?',
-      whereArgs: [username],
-    );
-    return result.isNotEmpty;
-  }
-
-  Future<int> updateUser(Map<String, dynamic> user) async {
-    Database db = await database;
-    return await db.update(
-      'users',
-      user,
-      where: 'id = ?',
-      whereArgs: [user['id']],
-    );
-  }
 
   // Message operations
   Future<int> insertMessage(Map<String, dynamic> message) async {
