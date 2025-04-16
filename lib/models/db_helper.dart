@@ -85,4 +85,16 @@ class DatabaseHelper {
       orderBy: 'timestamp ASC',
     );
   }
+  Future<List<Map<String, dynamic>>> getMessagesBetween(DateTime start, DateTime end) async {
+  final db = await database;
+  return await db.query(
+    'messages',
+    where: 'timestamp BETWEEN ? AND ?',
+    whereArgs: [start.toIso8601String(), end.toIso8601String()],
+    orderBy: 'timestamp ASC',
+  );
 }
+
+}
+
+
