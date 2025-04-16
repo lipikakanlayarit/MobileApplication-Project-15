@@ -50,7 +50,7 @@ packages:
     source: hosted
     version: "0.3.4+2"
   easy_date_timeline:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: easy_date_timeline
       sha256: "6a19722d98b508987f5fe0362f4065403909780a1481f052869aaebe37847b92"

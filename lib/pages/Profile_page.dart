@@ -1,14 +1,67 @@
 import 'package:flutter/material.dart';
-import '/pages/Setting.dart';
+import 'package:mobile_project/pages/Setting.dart';
 import '/pages/Login_page.dart';
+import 'package:mobile_project/models/database_helper.dart' as dbHelper;
+import 'dart:io';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final dbHelper.DatabaseHelper _settings = dbHelper.DatabaseHelper();
+  Map<String, dynamic>? _userData;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  // ฟังก์ชันดึงข้อมูลผู้ใช้จากฐานข้อมูล
+  Future<void> _loadUserData() async {
+    try {
+      final String? imagePath = _userData?['profileImagePath'];
+      if (imagePath != null && imagePath.isNotEmpty) {
+        final File imageFile = File(imagePath);
+        if (await imageFile.exists()) {
+          print("Image exists at path: $imagePath");
+        } else {
+          print("Image does not exist at path: $imagePath");
+        }
+      }
+      final userData = await _settings.getUserData();
+      print("User data loaded: $userData"); // Debug print
+      setState(() {
+        _userData = userData;
+      });
+    } catch (e) {
+      print("Error loading user data: $e");
+      setState(() {
+        _userData = {}; // Empty map as fallback
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
+    if (_userData == null) {
+      return Scaffold(
+        backgroundColor: const Color(0xFFFDF2D2),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final String username = _userData?['username'] ?? 'User';
+    final String dob = _userData?['dateOfBirth'] ?? 'Not Set';
+    final String phone = _userData?['phoneNumber'] ?? 'Not Set';
+    final String email = _userData?['email'] ?? 'Not Set';
+    final String? imagePath = _userData?['profileImagePath'];
+
+    print("DOB: $dob, Phone: $phone");
 
     return Scaffold(
       backgroundColor: const Color(0xFFFDF2D2),
@@ -17,8 +70,8 @@ class ProfilePage extends StatelessWidget {
           children: [
             // Header image
             Container(
-              width: screenWidth,
-              height: screenHeight * 0.25,
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height * 0.25,
               decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/images/Background-profile.png'),
@@ -26,13 +79,12 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
             ),
-
             // Bottom section
             Transform.translate(
-              offset: const Offset(0, -30), // Moves upward to overlap
+              offset: const Offset(0, -30),
               child: Container(
-                height: screenHeight * 0.75,
-                width: screenWidth,
+                height: MediaQuery.of(context).size.height * 0.75,
+                width: double.infinity,
                 padding: const EdgeInsets.only(top: 20),
                 decoration: const BoxDecoration(
                   color: Color(0xFFFDF2D2),
@@ -43,33 +95,38 @@ class ProfilePage extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    // Profile Circle - overlapping
+                    // Profile Circle
                     Transform.translate(
                       offset: const Offset(0, -50),
                       child: CircleAvatar(
                         radius: 90,
                         backgroundColor: const Color(0xFFFDF2D2),
-                        child: const CircleAvatar(
+                        child: CircleAvatar(
                           radius: 80,
-                          backgroundImage: AssetImage('assets/images/profile.jpg'),
+                          backgroundImage:
+                              (imagePath != null && imagePath.isNotEmpty)
+                                  ? FileImage(File(imagePath))
+                                  : const AssetImage(
+                                        'assets/images/profile.jpg',
+                                      )
+                                      as ImageProvider,
                         ),
                       ),
                     ),
 
                     Transform.translate(
-                      offset: const Offset(0, -30), // Move upwards
+                      offset: const Offset(0, -30),
                       child: Column(
-                        children: const [
+                        children: [
                           Text(
-                            "Lipikrit",
-                            style: TextStyle(
+                            username,
+                            style: const TextStyle(
                               fontSize: 24,
                               fontFamily: 'Kanit',
                               fontWeight: FontWeight.normal,
                               color: Colors.black87,
                             ),
                           ),
-                          
                         ],
                       ),
                     ),
@@ -77,17 +134,24 @@ class ProfilePage extends StatelessWidget {
                     const SizedBox(height: 20),
 
                     Padding(
-                      padding: const EdgeInsets.only(left: 90), // Set the start point here
+                      padding: const EdgeInsets.only(left: 90),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.calendar_today, color: Colors.brown[400], size: 20),
+                              Icon(
+                                Icons.calendar_today,
+                                color: Colors.brown[400],
+                                size: 20,
+                              ),
                               const SizedBox(width: 10),
                               Text(
-                                "4 Jul 2005 (20 years)",
-                                style: TextStyle(fontFamily: 'Kanit', color: Colors.brown[700]),
+                                "$dob",
+                                style: TextStyle(
+                                  fontFamily: 'Kanit',
+                                  color: Colors.brown[700],
+                                ),
                               ),
                             ],
                           ),
@@ -95,11 +159,18 @@ class ProfilePage extends StatelessWidget {
 
                           Row(
                             children: [
-                              Icon(Icons.phone, color: Colors.brown[400], size: 20),
+                              Icon(
+                                Icons.phone,
+                                color: Colors.brown[400],
+                                size: 20,
+                              ),
                               const SizedBox(width: 10),
                               Text(
-                                "090 - 999 - 9999",
-                                style: TextStyle(fontFamily: 'Kanit', color: Colors.brown[700]),
+                                phone,
+                                style: TextStyle(
+                                  fontFamily: 'Kanit',
+                                  color: Colors.brown[700],
+                                ),
                               ),
                             ],
                           ),
@@ -107,12 +178,19 @@ class ProfilePage extends StatelessWidget {
 
                           Row(
                             children: [
-                              Icon(Icons.email, color: Colors.brown[400], size: 20),
+                              Icon(
+                                Icons.email,
+                                color: Colors.brown[400],
+                                size: 20,
+                              ),
                               const SizedBox(width: 10),
                               Flexible(
                                 child: Text(
-                                  "ytyjrcgvbhjkj:p@gvbhjnjkml:l.com",
-                                  style: TextStyle(fontFamily: 'Kanit', color: Colors.brown[700]),
+                                  email,
+                                  style: TextStyle(
+                                    fontFamily: 'Kanit',
+                                    color: Colors.brown[700],
+                                  ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
@@ -127,11 +205,17 @@ class ProfilePage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TextButton(
-                          onPressed: () {
-                            Navigator.push(
+                          onPressed: () async {
+                            final result = await Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const SettingsPage()),
+                              MaterialPageRoute(
+                                builder: (context) => const SettingsPage(),
+                              ),
                             );
+
+                            if (result == true) {
+                              _loadUserData(); // ดึงข้อมูลใหม่จากฐานข้อมูล
+                            }
                           },
                           child: const Text(
                             "Setting",
@@ -143,20 +227,27 @@ class ProfilePage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const Text("|",
-                            style: TextStyle(
-                                fontFamily: 'Kanit',
-                                fontSize: 18,
-                                fontWeight: FontWeight.w100,
-                                color: Colors.black87)),
+
+                        const Text(
+                          "|",
+                          style: TextStyle(
+                            fontFamily: 'Kanit',
+                            fontSize: 18,
+                            fontWeight: FontWeight.w100,
+                            color: Colors.black87,
+                          ),
+                        ),
 
                         TextButton(
                           onPressed: () {
                             // Remove all previous pages from the stack, and only keep the LoginPage
                             Navigator.pushAndRemoveUntil(
                               context,
-                              MaterialPageRoute(builder: (context) => LoginPage()),
-                              (route) => false, // This ensures that no previous pages are in the stack
+                              MaterialPageRoute(
+                                builder: (context) => LoginPage(),
+                              ),
+                              (route) =>
+                                  false, // This ensures that no previous pages are in the stack
                             );
                           },
                           child: const Text(
@@ -169,7 +260,6 @@ class ProfilePage extends StatelessWidget {
                             ),
                           ),
                         ),
-
                       ],
                     ),
                   ],
@@ -182,8 +272,3 @@ class ProfilePage extends StatelessWidget {
     );
   }
 }
-
-
-
-
-

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_project/bottom_navigationbar/navigation_page.dart';
+import 'home_page.dart';
 import '/pages/Signup_page.dart';
-import 'package:mobile_project/models/database_helper.dart'; // Import database helper
+import 'Forgotpwd.dart';
+import 'package:mobile_project/models/database_helper.dart';
 
 class LoginPage extends StatefulWidget {
-  @override 
+  @override
   _LoginPageState createState() => _LoginPageState();
 }
 
@@ -14,7 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>(); // For form validation
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final DatabaseHelper _dbHelper = DatabaseHelper(); // Database helper instance
+  final DatabaseHelper _dbHelper = DatabaseHelper();
 
   bool _obscurePassword = true;
   bool _isLoading = false;
@@ -25,14 +27,14 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _isLoading = true;
       });
-      
+
       try {
         // Check credentials in database
         final isValidUser = await _dbHelper.checkUserCredentials(
-          _emailController.text, 
-          _passwordController.text
+          _emailController.text,
+          _passwordController.text,
         );
-        
+
         if (isValidUser) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -41,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
               duration: Duration(seconds: 2),
             ),
           );
-          
+
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => BottomNavigationPage()),
@@ -109,13 +111,16 @@ class _LoginPageState extends State<LoginPage> {
                             color: Color(0xFFEB7339),
                             fontWeight: FontWeight.bold,
                           ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => SignUpScreen()),
-                              );
-                            },
+                          recognizer:
+                              TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SignUpScreen(),
+                                    ),
+                                  );
+                                },
                         ),
                       ],
                     ),
@@ -138,8 +143,11 @@ class _LoginPageState extends State<LoginPage> {
                         hintText: 'Email',
                         controller: _emailController,
                         validator: (value) {
-                          if (value == null || value.isEmpty) return 'Please enter your email';
-                          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                          if (value == null || value.isEmpty)
+                            return 'Please enter your email';
+                          if (!RegExp(
+                            r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                          ).hasMatch(value)) {
                             return 'Please enter a valid email';
                           }
                           return null;
@@ -167,14 +175,17 @@ class _LoginPageState extends State<LoginPage> {
                                   border: InputBorder.none,
                                 ),
                                 validator: (value) {
-                                  if (value == null || value.isEmpty) return 'Please enter a password';
+                                  if (value == null || value.isEmpty)
+                                    return 'Please enter a password';
                                   return null;
                                 },
                               ),
                             ),
                             IconButton(
                               icon: Icon(
-                                _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                _obscurePassword
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
                                 color: Colors.grey,
                               ),
                               onPressed: () {
@@ -187,13 +198,19 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       const SizedBox(height: 15),
-                      
+
                       // Forgot Password Link
                       Align(
                         alignment: Alignment.centerRight,
                         child: GestureDetector(
                           onTap: () {
-                            // Add forgot password functionality
+                            // Navigate to forgot password screen
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ForgotPasswordScreen(),
+                              ),
+                            );
                           },
                           child: const Text(
                             'Forgot Password?',
@@ -205,7 +222,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      
+
                       // Login button
                       SizedBox(
                         width: double.infinity,
@@ -218,28 +235,29 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 15),
                           ),
-                          child: _isLoading 
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.black,
+                          child:
+                              _isLoading
+                                  ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.black,
+                                    ),
+                                  )
+                                  : const Text(
+                                    'Login',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                )
-                              : const Text(
-                                  'Login',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
                         ),
                       ),
                       const SizedBox(height: 10),
                     ],
                   ),
-               ),
+                ),
               ],
             ),
           ),
