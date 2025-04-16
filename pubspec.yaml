@@ -13,6 +13,7 @@ dependencies:
   http: ^1.3.0
   sqflite: ^2.4.2
   path: ^1.9.1
+  image_picker: ^1.0.4
 
 dev_dependencies:
   flutter_test:
@@ -38,7 +39,7 @@ flutter:
     - assets/images/QuestBackground-04-01.png
     - assets/images/HomeBackground.png
     - assets/images/Background-profile.png
-
+    - assets/images/ocean.jpg
   fonts:
     - family: Kanit
       fonts:

@@ -18,73 +18,77 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  
-  final DatabaseHelper _dbHelper = DatabaseHelper(); // Instance of database helper
+
+  final DatabaseHelper _dbHelper =
+      DatabaseHelper(); // Instance of database helper
   bool _obscurePassword = true;
   bool _isLoading = false;
 
   Future<void> _validateForm() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
-      
-      try {
-        // Check if user with this email already exists
-        final existingUser = await _dbHelper.getUserByEmail(_emailController.text);
-        
-        if (existingUser != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Email already exists, please login instead'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        } else {
-          // Create new user record
-          final userData = {
-            'username': _usernameController.text,
-            'dob': _dateController.text,
-            'phone': _phoneController.text,
-            'email': _emailController.text,
-            'password': _passwordController.text, // In production, use proper hashing
-          };
-          
-          final userId = await _dbHelper.insertUser(userData);
-          
-          if (userId > 0) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Sign Up Successful!'),
-                backgroundColor: Color(0xFFB7CA79),
-                duration: Duration(seconds: 2),
-              ),
-            );
-            
-            Future.delayed(const Duration(seconds: 1), () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => BottomNavigationPage()),
-              );
-            });
-          } else {
-            throw Exception('Failed to create account');
-          }
-        }
-      } catch (e) {
+  if (_formKey.currentState!.validate()) {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // ตรวจสอบว่ามีอีเมลนี้ในฐานข้อมูลหรือไม่
+      final existingUser = await _dbHelper.getUserByEmail(
+        _emailController.text,
+      );
+
+      if (existingUser != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: ${e.toString()}'),
+          const SnackBar(
+            content: Text('Email already exists, please login instead'),
             backgroundColor: Colors.red,
           ),
         );
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
+      } else {
+        // หากไม่พบ ให้ทำการสมัครสมาชิกใหม่
+        final userData = {
+          'username': _usernameController.text,
+          'dateOfBirth': _dateController.text, // แก้ไขเป็น dateOfBirth
+          'phoneNumber': _phoneController.text, // แก้ไขเป็น phoneNumber
+          'email': _emailController.text,
+          'password': _passwordController.text,
+        };
+
+        final userId = await _dbHelper.insertUser(userData);
+
+        if (userId > 0) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Sign Up Successful!'),
+              backgroundColor: Color(0xFFB7CA79),
+              duration: Duration(seconds: 2),
+            ),
+          );
+
+          Future.delayed(const Duration(seconds: 1), () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => BottomNavigationPage()),
+            );
+          });
+        } else {
+          throw Exception('Failed to create account');
+        }
       }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
+}
+
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -96,17 +100,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF556E59), 
-              onPrimary: Colors.white,   
-              surface: Color(0xFFB7CA79),  
-              onSurface: Colors.white, 
+              primary: Color(0xFF556E59),
+              onPrimary: Colors.white,
+              surface: Color(0xFFB7CA79),
+              onSurface: Colors.white,
               secondary: Color(0xFFFF6B6B),
-              onBackground: Color(0xFFB7CA79), 
+              onBackground: Color(0xFFB7CA79),
             ),
             textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: Color(0xFF556E59), 
-              ),
+              style: TextButton.styleFrom(foregroundColor: Color(0xFF556E59)),
             ),
           ),
           child: child!,
@@ -152,13 +154,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             color: Color(0xFFEB7339),
                             fontWeight: FontWeight.bold,
                           ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => LoginPage()),
-                              );
-                            },
+                          recognizer:
+                              TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => LoginPage(),
+                                    ),
+                                  );
+                                },
                         ),
                       ],
                     ),
@@ -180,7 +185,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         icon: Icons.person,
                         hintText: 'Username',
                         controller: _usernameController,
-                        validator: (value) => value!.isEmpty ? 'Please enter your name' : null,
+                        validator:
+                            (value) =>
+                                value!.isEmpty
+                                    ? 'Please enter your name'
+                                    : null,
                       ),
                       const SizedBox(height: 15),
 
@@ -193,7 +202,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: Row(
                           children: [
-                            const Icon(Icons.calendar_today, color: Color(0xFFEB7339)),
+                            const Icon(
+                              Icons.calendar_today,
+                              color: Color(0xFFEB7339),
+                            ),
                             const SizedBox(width: 15),
                             Expanded(
                               child: TextFormField(
@@ -207,7 +219,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                             ),
                             IconButton(
-                              icon: const Icon(Icons.calendar_month_outlined, color: Colors.grey),
+                              icon: const Icon(
+                                Icons.calendar_month_outlined,
+                                color: Colors.grey,
+                              ),
                               onPressed: () => _selectDate(context),
                             ),
                           ],
@@ -221,7 +236,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         hintText: 'Phone Number',
                         controller: _phoneController,
                         keyboardType: TextInputType.phone,
-                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                       ),
                       const SizedBox(height: 15),
 
@@ -231,8 +248,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         hintText: 'Email',
                         controller: _emailController,
                         validator: (value) {
-                          if (value == null || value.isEmpty) return 'Please enter your email';
-                          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                          if (value == null || value.isEmpty)
+                            return 'Please enter your email';
+                          if (!RegExp(
+                            r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                          ).hasMatch(value)) {
                             return 'Please enter a valid email';
                           }
                           return null;
@@ -260,15 +280,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   border: InputBorder.none,
                                 ),
                                 validator: (value) {
-                                  if (value == null || value.isEmpty) return 'Please enter a password';
-                                  if (value.length < 6) return 'Password must be at least 6 characters';
+                                  if (value == null || value.isEmpty)
+                                    return 'Please enter a password';
+                                  if (value.length < 6)
+                                    return 'Password must be at least 6 characters';
                                   return null;
                                 },
                               ),
                             ),
                             IconButton(
                               icon: Icon(
-                                _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                _obscurePassword
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
                                 color: Colors.grey,
                               ),
                               onPressed: () {
@@ -293,25 +317,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: _isLoading 
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.black,
-                                ),
-                              )
-                            : const Text(
-                                'Sign Up',
-                                style: TextStyle(color: Colors.black),
-                              ),
+                          child:
+                              _isLoading
+                                  ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.black,
+                                    ),
+                                  )
+                                  : const Text(
+                                    'Sign Up',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
                         ),
                       ),
                       const SizedBox(height: 10),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
