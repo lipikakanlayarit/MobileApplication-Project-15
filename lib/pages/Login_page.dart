@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_project/bottom_navigationbar/navigation_page.dart';
-import 'home_page.dart';
+// import 'home_page.dart';
 import '/pages/Signup_page.dart';
 import 'Forgotpwd.dart';
 import 'package:mobile_project/models/database_helper.dart';
