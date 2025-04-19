@@ -168,7 +168,7 @@ class _HeaderSectionWeeklyState extends State<HeaderSectionWeekly> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(18),
+      margin: const EdgeInsets.only(top: 8, left: 12, right: 12, bottom: 18),
       height: 190,
       decoration: BoxDecoration(
         color: const Color(0xFFB7CA79),
@@ -217,24 +217,26 @@ class _HeaderSectionWeeklyState extends State<HeaderSectionWeekly> {
             ),
           ),
           // Week date timeline - Using Padding and Align instead of Center with mainAxisAlignment
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return Align(
-                    alignment: Alignment.center,
-                    child: SizedBox(
-                      // Set a fixed width to center the timeline if needed
-                      width: constraints.maxWidth,
-                      child: EasyDateTimeLine(
+          // Expanded(
+          //   child: Padding(
+          //     padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          //     child: LayoutBuilder(
+          //       builder: (context, constraints) {
+          //         return Align(
+          //           alignment: Alignment.center,
+          //           child: SizedBox(
+          //             // Set a fixed width to center the timeline if needed
+          //             width: constraints.maxWidth,
+          //             child:
+                       EasyDateTimeLine(
                         key: ValueKey('week-${_weekStartDate.toString()}'),
                         initialDate: _selectedDate,
                         activeColor: const Color(0xFF556E59),
                         headerProps: const EasyHeaderProps(showHeader: false),
                         dayProps: EasyDayProps(
                           width: 45,
-                          height: 70,
+                          height: 80,
+                          
                           activeDayStrStyle: const TextStyle(
                             color: Colors.white,
                             fontFamily: 'Kanit',
@@ -279,15 +281,16 @@ class _HeaderSectionWeeklyState extends State<HeaderSectionWeekly> {
                           });
                         },
                       ),
+        ]
                     ),
                   );
                 }
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    //           ),
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    // );
   }
 
   String _getMonthName(int month) {
@@ -307,7 +310,7 @@ class _HeaderSectionWeeklyState extends State<HeaderSectionWeekly> {
     ];
     return monthNames[month - 1];
   }
-}
+// }
 
 class BottomSection extends StatelessWidget {
   final String randomQuote;
