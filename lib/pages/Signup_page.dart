@@ -25,70 +25,77 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _isLoading = false;
 
   Future<void> _validateForm() async {
-  if (_formKey.currentState!.validate()) {
-    setState(() {
-      _isLoading = true;
-    });
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
 
-    try {
-      // ตรวจสอบว่ามีอีเมลนี้ในฐานข้อมูลหรือไม่
-      final existingUser = await _dbHelper.getUserByEmail(
-        _emailController.text,
-      );
-
-      if (existingUser != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Email already exists, please login instead'),
-            backgroundColor: Colors.red,
-          ),
+      try {
+        // ตรวจสอบว่ามีอีเมลนี้ในฐานข้อมูลหรือไม่
+        final existingUser = await _dbHelper.getUserByEmail(
+          _emailController.text,
         );
-      } else {
-        // หากไม่พบ ให้ทำการสมัครสมาชิกใหม่
-        final userData = {
-          'username': _usernameController.text,
-          'dateOfBirth': _dateController.text, // แก้ไขเป็น dateOfBirth
-          'phoneNumber': _phoneController.text, // แก้ไขเป็น phoneNumber
-          'email': _emailController.text,
-          'password': _passwordController.text,
-        };
 
-        final userId = await _dbHelper.insertUser(userData);
-
-        if (userId > 0) {
+        if (existingUser != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Sign Up Successful!'),
-              backgroundColor: Color(0xFFB7CA79),
+              content: Text(
+                'Email already exists, please login instead',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
+              ),
+              backgroundColor: Colors.red,
               duration: Duration(seconds: 2),
             ),
           );
-
-          Future.delayed(const Duration(seconds: 1), () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => BottomNavigationPage()),
-            );
-          });
         } else {
-          throw Exception('Failed to create account');
+          // หากไม่พบ ให้ทำการสมัครสมาชิกใหม่
+          final userData = {
+            'username': _usernameController.text,
+            'dateOfBirth': _dateController.text,
+            'phoneNumber': _phoneController.text,
+            'email': _emailController.text,
+            'password': _passwordController.text,
+          };
+
+          final userId = await _dbHelper.insertUser(userData);
+
+          if (userId > 0) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Sign Up Successful!'),
+                backgroundColor: Color(0xFFB7CA79),
+                duration: Duration(seconds: 2),
+              ),
+            );
+
+            Future.delayed(const Duration(seconds: 1), () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => BottomNavigationPage()),
+              );
+            });
+          } else {
+            throw Exception('Failed to create account');
+          }
         }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: ${e.toString()}'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
-}
-
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -213,7 +220,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 decoration: const InputDecoration(
                                   hintText: 'Date of Birth',
                                   border: InputBorder.none,
+                                  errorText: null,
                                 ),
+                                validator:
+                                    (value) =>
+                                        value!.isEmpty
+                                            ? 'Please enter your birthdate'
+                                            : null,
                                 readOnly: true,
                                 onTap: () => _selectDate(context),
                               ),
@@ -235,6 +248,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         icon: Icons.phone,
                         hintText: 'Phone Number',
                         controller: _phoneController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty)
+                            return 'Please enter your phone number';
+                          if (!RegExp(r'^[0-9]+$').hasMatch(value))
+                            return 'Please enter a valid phone number';
+                           if (value.length != 10)
+                            return 'Phone number must be 10 digits';
+                          return null;
+                        },
                         keyboardType: TextInputType.phone,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,

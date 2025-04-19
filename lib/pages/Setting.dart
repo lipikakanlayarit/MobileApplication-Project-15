@@ -90,9 +90,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: const Color(
-            0xFFB7CA79,
-          ), 
+          backgroundColor: const Color( 0xFFB7CA79,), 
           content: Text(
             'Profile updated successfully',
             style: TextStyle(
@@ -103,9 +101,8 @@ class _SettingsPageState extends State<SettingsPage> {
           elevation: 0,
           duration: const Duration(seconds: 2),
           behavior:
-              SnackBarBehavior.floating, // SnackBar float
+              SnackBarBehavior.floating, 
           shape: RoundedRectangleBorder(
-            // gives rounded corners
             borderRadius: BorderRadius.circular(10),
           ),
         ),

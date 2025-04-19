@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_project/models/db_helper.dart';
 
+
 class ChatPage extends StatefulWidget {
-  final int userId; // Required parameter
+  final int userId; 
   final VoidCallback? onMessageSent;
 
   const ChatPage({super.key, required this.userId, this.onMessageSent});
@@ -16,7 +17,7 @@ class _ChatScreenState extends State<ChatPage> {
   final DatabaseHelper _dbHelper = DatabaseHelper();
   bool _isLoading = true;
   TextEditingController _controller = TextEditingController();
-  String _selectedEmoji = 'assets/images/Happy-01.png'; // Default emoji
+  String _selectedEmoji = 'assets/images/Happy-01.png'; 
   bool _isEmojiPickerVisible = false;
   final ScrollController _scrollController = ScrollController();
 
@@ -36,6 +37,7 @@ class _ChatScreenState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
+    _dbHelper.archiveAndClearOldMessages();
     _loadMessages();
   }
 
@@ -56,29 +58,115 @@ class _ChatScreenState extends State<ChatPage> {
     }
   }
 
-  Future<void> _loadMessages() async {
+Future<void> _deleteMessage(int index, int messageId) async {
+  // First check if the widget is still mounted
+  if (!mounted) return;
+  
+  try {
+    // Optimistically update UI first
+    final deletedMessage = _messages[index];
     setState(() {
-      _isLoading = true;
+      _messages.removeAt(index);
     });
-
-    try {
-      final messages = await _dbHelper.getMessages();
+    
+    // Then perform database operation
+    await _dbHelper.deleteMessage(messageId);
+    
+    // Only call refresh if still mounted
+    if (mounted && widget.onMessageSent != null) {
+      widget.onMessageSent!();
+    }
+  } catch (e) {
+    print('Error deleting message: $e');
+    
+    // Only update UI if still mounted
+    if (mounted) {
+      // Put the message back on error
       setState(() {
-        _messages = messages;
+        
       });
-
-      // Scroll to bottom after messages are loaded
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToBottom();
-      });
-    } catch (e) {
-      print('Error loading messages: $e');
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      
+      // Show error to user
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error deleting message. Please try again.'))
+      );
     }
   }
+}
+
+Future<void> _clearAllMessages() async {
+  // Check if the widget is still mounted
+  if (!mounted) return;
+  
+  // Keep a backup of messages in case of error
+  final backupMessages = List<Map<String, dynamic>>.from(_messages);
+  
+  try {
+    // Optimistically update UI
+    setState(() {
+      _messages.clear();
+    });
+    
+    // Then perform database operation
+    await _dbHelper.clearAllMessages();
+    
+    // Only trigger refresh if still mounted
+    if (mounted && widget.onMessageSent != null) {
+      widget.onMessageSent!();
+    }
+  } catch (e) {
+    print('Error clearing messages: $e');
+    
+    // Only update UI if still mounted
+    if (mounted) {
+      // Restore messages on error
+      setState(() {
+        _messages = backupMessages;
+      });
+      
+      // Show error to user
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error clearing messages. Please try again.'))
+      );
+    }
+  }
+}
+
+  Future<void> _loadMessages() async {
+  setState(() {
+    _isLoading = true;
+  });
+
+  try {
+    // Get only today's messages
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day).toIso8601String();
+    final tomorrow = DateTime(now.year, now.month, now.day + 1).toIso8601String();
+    
+    final db = await _dbHelper.database;
+    final messages = await db.query(
+      'messages',
+      where: "timestamp >= ? AND timestamp < ?",
+      whereArgs: [today, tomorrow],
+      orderBy: 'timestamp ASC'
+    );
+    
+    setState(() {
+      _messages = messages;
+    });
+
+    // Scroll to bottom after messages are loaded
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToBottom();
+    });
+  } catch (e) {
+    print('Error loading messages: $e');
+  } finally {
+    setState(() {
+      _isLoading = false;
+    });
+  }
+}
 
   void _toggleEmojiPicker() {
     setState(() {
@@ -91,6 +179,13 @@ class _ChatScreenState extends State<ChatPage> {
       _selectedEmoji = emoji;
       _isEmojiPickerVisible = false; // Hide emoji picker after selection
     });
+  }
+
+  void _triggerRefresh() {
+    print("Triggering HomePage refresh"); // Debug print
+    if (widget.onMessageSent != null) {
+      widget.onMessageSent!();
+    }  
   }
 
   // Fixed _sendMessage with proper database integration and immediate UI update
@@ -124,7 +219,7 @@ class _ChatScreenState extends State<ChatPage> {
                 ..add(message);
             });
 
-            widget.onMessageSent?.call();
+            _triggerRefresh();
 
             WidgetsBinding.instance.addPostFrameCallback((_) {
               _scrollToBottom();
@@ -145,6 +240,7 @@ class _ChatScreenState extends State<ChatPage> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,7 +253,7 @@ class _ChatScreenState extends State<ChatPage> {
             color: Colors.black,
           ),
         ),
-        backgroundColor: const Color.fromRGBO(183, 202, 121, 1),
+        backgroundColor: const Color(0xFFB7CA79),
         actions: [
           IconButton(
             icon: Icon(Icons.delete),
@@ -175,11 +271,19 @@ class _ChatScreenState extends State<ChatPage> {
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context, false),
-                              child: Text('Cancel'),
+                              child: Text('Cancel',
+                                  style: TextStyle(
+                                    color: Color (0xFF5E8B84),
+                                  ),
+                                ),
                             ),
                             TextButton(
                               onPressed: () => Navigator.pop(context, true),
-                              child: Text('Delete'),
+                              child: Text('Delete',
+                                  style: TextStyle(
+                                    color: Color(0xFFBE4839),
+                                  ),
+                              ),
                             ),
                           ],
                         ),
@@ -187,10 +291,19 @@ class _ChatScreenState extends State<ChatPage> {
                   false;
 
               if (confirm) {
-                await _dbHelper.clearAllMessages();
-                setState(() {
-                  _messages.clear();
-                });
+                try {
+                  await _dbHelper.clearAllMessages();
+                  setState(() {
+                    _messages.clear();
+                  });
+                  // Make sure to trigger refresh AFTER the database operation completes
+                  _triggerRefresh();
+                } catch (e) {
+                  print("Error clearing messages: $e");
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error clearing chat history'))
+                  );
+                }
               }
             },
           ),
@@ -215,8 +328,7 @@ class _ChatScreenState extends State<ChatPage> {
                               itemCount: _messages.length,
                               itemBuilder: (context, index) {
                                 var message = _messages[index];
-                                bool isUserMessage =
-                                    message['is_user_message'] == 'true';
+                                bool isUserMessage = message['is_user_message'] == 'true';
 
                                 // Format timestamp for display
                                 String displayTime = '';
@@ -286,32 +398,46 @@ class _ChatScreenState extends State<ChatPage> {
                                                                   Navigator.pop(
                                                                     context,
                                                                   ),
-                                                          child: Text('Cancel'),
+                                                          child: Text('Cancel',
+                                                              style: TextStyle(
+                                                                color: Color(0xFF5E8B84),
+                                                              ),
+                                                          ),
                                                         ),
                                                         TextButton(
                                                           onPressed: () async {
-                                                            // Fixed: properly parse id to int
-                                                            if (message['id'] !=
-                                                                null) {
-                                                              await _dbHelper
-                                                                  .deleteMessage(
-                                                                    int.parse(
-                                                                      message['id']
-                                                                          .toString(),
-                                                                    ),
-                                                                  );
-                                                              setState(() {
-                                                                _messages
-                                                                    .removeAt(
-                                                                      index,
-                                                                    );
-                                                              });
+                                                            try {
+                                                              if (message['id'] != null) {
+                                                                int messageId = int.parse(
+                                                                  message['id'].toString(),
+                                                                );
+                                                                
+                                                                // Delete from database
+                                                                await _dbHelper.deleteMessage(messageId);
+                                                                
+                                                                // Remove from local list
+                                                                setState(() {
+                                                                  _messages.removeAt(index);
+                                                                });
+                                                                
+                                                                // Trigger refresh AFTER deletion is complete
+                                                                _triggerRefresh();
+                                                                
+                                                                Navigator.pop(context);
+                                                              }
+                                                            } catch (e) {
+                                                              print("Error deleting message: $e");
+                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                SnackBar(content: Text('Error deleting message'))
+                                                              );
+                                                              Navigator.pop(context);
                                                             }
-                                                            Navigator.pop(
-                                                              context,
-                                                            );
                                                           },
-                                                          child: Text('Delete'),
+                                                          child: Text('Delete',
+                                                              style: TextStyle(
+                                                                color: Color(0xFFBE4839),
+                                                              ),
+                                                          ),
                                                         ),
                                                       ],
                                                     ),
