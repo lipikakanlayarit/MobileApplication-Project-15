@@ -3,8 +3,21 @@ import 'package:intl/intl.dart';
 import 'package:mobile_project/pages/Chat_page.dart';
 import 'package:mobile_project/models/db_helper.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  // Create GlobalKey to access TodayMoodSectionState
+  final GlobalKey<_TodayMoodSectionState> _todayMoodKey = GlobalKey();
+
+  // Method to refresh TodayMoodSection
+  void _refreshTodayMood() {
+    _todayMoodKey.currentState?.loadMessagesFromOutside(); // Call refresh
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +29,12 @@ class HomePage extends StatelessWidget {
       body: Column(
         children: <Widget>[
           HeaderSection(screenWidth: screenWidth, screenHeight: screenHeight),
-          BottomSection(screenWidth: screenWidth, screenHeight: screenHeight),
+          BottomSection(
+            screenWidth: screenWidth,
+            screenHeight: screenHeight,
+            onRefreshTodayMood: _refreshTodayMood, // Pass callback to BottomSection
+            todayMoodKey: _todayMoodKey, // Pass the key to TodayMoodSection
+          ),
         ],
       ),
     );
@@ -100,10 +118,14 @@ class HeaderSection extends StatelessWidget {
 class BottomSection extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;
+  final VoidCallback onRefreshTodayMood;
+  final GlobalKey<_TodayMoodSectionState> todayMoodKey;
 
   const BottomSection({
     required this.screenWidth,
     required this.screenHeight,
+    required this.onRefreshTodayMood,
+    required this.todayMoodKey,
   });
 
   @override
@@ -120,9 +142,17 @@ class BottomSection extends StatelessWidget {
       ),
       child: Column(
         children: [
-          FeelButtonSection(screenWidth: screenWidth, screenHeight: screenHeight),
+          FeelButtonSection(
+            screenWidth: screenWidth,
+            screenHeight: screenHeight,
+            onMessageSent: onRefreshTodayMood, // Pass callback to FeelButtonSection
+          ),
           SizedBox(height: 10),
-          TodayMoodSection(screenWidth: screenWidth, screenHeight: screenHeight),
+          TodayMoodSection(
+            key: todayMoodKey, // Assign the key to TodayMoodSection
+            screenWidth: screenWidth,
+            screenHeight: screenHeight,
+          ),
         ],
       ),
     );
@@ -132,19 +162,26 @@ class BottomSection extends StatelessWidget {
 class FeelButtonSection extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;
+  final VoidCallback onMessageSent;
 
   const FeelButtonSection({
     required this.screenWidth,
     required this.screenHeight,
+    required this.onMessageSent,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
+      onTap: () async {
+        await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ChatPage(userId: 1)),
+          MaterialPageRoute(
+            builder: (context) => ChatPage(
+              userId: 1,
+              onMessageSent: onMessageSent, // Pass callback to ChatPage
+            ),
+          ),
         );
       },
       child: Container(
@@ -188,7 +225,8 @@ class TodayMoodSection extends StatefulWidget {
   const TodayMoodSection({
     required this.screenWidth,
     required this.screenHeight,
-  });
+    Key? key, // Accept key parameter
+  }) : super(key: key); // Pass key to superclass
 
   @override
   State<TodayMoodSection> createState() => _TodayMoodSectionState();
@@ -208,17 +246,20 @@ class _TodayMoodSectionState extends State<TodayMoodSection> {
   Future<void> _loadTodayMessages() async {
     try {
       final messages = await _dbHelper.getMessagesForToday();
-
       setState(() {
         _todayMessages = messages;
         _isLoading = false;
       });
     } catch (e) {
-      print('Error loading today messages: \$e');
+      print('Error loading today messages: $e');
       setState(() {
         _isLoading = false;
       });
     }
+  }
+
+  void loadMessagesFromOutside() {
+    _loadTodayMessages(); // Refresh the messages from outside
   }
 
   @override
@@ -250,7 +291,7 @@ class _TodayMoodSectionState extends State<TodayMoodSection> {
           _isLoading
               ? Center(child: CircularProgressIndicator())
               : Container(
-                  padding: EdgeInsets.all(widget.screenHeight * 0.025),
+                  padding: EdgeInsets.all(widget.screenHeight * 0.02),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
@@ -275,7 +316,7 @@ class _TodayMoodSectionState extends State<TodayMoodSection> {
                                 final timestamp = DateTime.parse(message['timestamp'] ?? '');
                                 timeText = DateFormat('HH:mm').format(timestamp);
                               } catch (e) {
-                                print('Error parsing timestamp: \$e');
+                                print('Error parsing timestamp: $e');
                               }
 
                               return Container(
@@ -287,15 +328,7 @@ class _TodayMoodSectionState extends State<TodayMoodSection> {
                                       width: widget.screenWidth * 0.12,
                                       height: widget.screenWidth * 0.12,
                                     ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      timeText,
-                                      style: const TextStyle(
-                                        fontFamily: 'Kanit',
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      ),
-                                    ),
+                                    Text(timeText),
                                   ],
                                 ),
                               );

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// Create a singleton instance of ChecklistManager
+
 class ChecklistManager {
-  // Singleton pattern
+
   static final ChecklistManager _instance = ChecklistManager._internal();
 
   factory ChecklistManager() {
@@ -31,20 +31,16 @@ class ChecklistManager {
     try {
       final prefs = await SharedPreferences.getInstance();
       
-      // Load stage and loopCount with default values if not found
       stage = prefs.getInt('quest_stage') ?? 1;
       loopCount = prefs.getInt('quest_loop_count') ?? 0;
       
-      // Reset checklist based on loaded stage
       _resetChecklist();
-      
-      // Load individual checklist items
+      // Load all checklist items
       for (String key in checklist.keys) {
         bool? savedValue = prefs.getBool('quest_item_$key');
         checklist[key] = savedValue ?? false;
       }
-      
-      // Debug prints
+
       print('Loaded checklist items: ${checklist.length}');
       checklist.forEach((key, value) {
         print('Item: $key = $value');
@@ -182,8 +178,7 @@ class _QuestPageState extends State<QuestPage> with WidgetsBindingObserver {
           isLoading = false;
         });
       }
-      
-      // Debug print to check checklist items
+ 
       print('After initialization, checklist has ${checklistManager.checklist.length} items');
       
     } catch (e) {
@@ -203,8 +198,6 @@ class _QuestPageState extends State<QuestPage> with WidgetsBindingObserver {
         body: Center(child: CircularProgressIndicator()),
       );
     }
-
-    // Get screen size to ensure proper layout
     final screenSize = MediaQuery.of(context).size;
     
     return Scaffold(
@@ -215,7 +208,7 @@ class _QuestPageState extends State<QuestPage> with WidgetsBindingObserver {
         child: Column(
           children: [
             SizedBox(
-              height: 380, // Fixed height for top section
+              height: 380, 
               child: _buildTopSection(screenSize),
             ),
             Expanded(
@@ -236,7 +229,7 @@ class _QuestPageState extends State<QuestPage> with WidgetsBindingObserver {
     }
 
     return Stack(
-      clipBehavior: Clip.none, //Prevent overflow
+      clipBehavior: Clip.none, 
       children: [
         Container(
           width: screenSize.width,
@@ -249,7 +242,7 @@ class _QuestPageState extends State<QuestPage> with WidgetsBindingObserver {
           ),
         ),
         Positioned(
-        top: 40, 
+        top: 50, 
         left: 0,
         right: 0,
         child: Center(
@@ -267,10 +260,10 @@ class _QuestPageState extends State<QuestPage> with WidgetsBindingObserver {
           top: 20,
           right: 20,
           child: Container(
-            margin: const EdgeInsets.fromLTRB(0, 20, 20, 0),
+            margin: const EdgeInsets.only(top:12,bottom: 20),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 255, 232, 172).withOpacity(0.6),
+              color: const Color(0xFFFFE8AC).withOpacity(0.6),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
@@ -294,7 +287,6 @@ class _QuestPageState extends State<QuestPage> with WidgetsBindingObserver {
   }
 
   Widget _buildProgressBar(double screenWidth) {
-    // Calculate progress bar width based on screen width
     final progressBarWidth = screenWidth * 0.7; // 70% of screen width
     
     return Center(
@@ -333,10 +325,10 @@ class _QuestPageState extends State<QuestPage> with WidgetsBindingObserver {
     });
     
     return Container(
-      width: double.infinity,
+      // width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
       decoration: const BoxDecoration(
-        color: Color.fromARGB(255, 253, 242, 210),
+        color: Color(0xFFFDF2D2),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
@@ -386,7 +378,7 @@ class _QuestPageState extends State<QuestPage> with WidgetsBindingObserver {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Congratulations!'),
-          content: const Text('You have completed this stage!'),
+          content: const Text('You have completed this stage ( ﾟヮﾟ)//🏆'),
           actions: [
             TextButton(
               onPressed: () async {

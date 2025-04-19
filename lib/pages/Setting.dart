@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart' as path;
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_project/models/database_helper.dart';

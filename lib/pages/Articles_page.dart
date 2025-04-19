@@ -249,20 +249,10 @@ void filterByCategory(String category) {
                       children: [
                         FilterButton(label: 'All', isSelected: selectedFilter == 'All', onTap: () => filterByCategory('All')),
                         const SizedBox(width: 8),
-                        FilterButton(label: 'Like', isSelected: selectedFilter == 'Like', onTap: () => filterByCategory('Like')),
-                        const SizedBox(width: 8),
-                        FilterButton(label: 'Watch Later', isSelected: selectedFilter == 'Watch Later', onTap: () => filterByCategory('Watch Later')),
                       ],
                     ),
                   ),
                   const SizedBox(height: 10),
-
-
-
-
-
-
-
                     // Article List
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
@@ -356,16 +346,6 @@ void filterByCategory(String category) {
                         );
                       },
                     ),
-
-
-
-
-
-
-
-
-
-
                     // Pagination buttons
                     Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -456,7 +436,7 @@ class FilterButton extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(
-          color: isSelected ? Colors.white : Colors.brown, // ✅ ปรับสีตัวหนังสือ
+          color: isSelected ? Colors.white : Colors.brown, 
         ),
       ),
     );

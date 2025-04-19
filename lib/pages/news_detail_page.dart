@@ -41,35 +41,7 @@ class NewsDetailPage extends StatelessWidget {
               ),
               
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.thumb_up, color: Color.fromARGB(255, 90, 78, 66),),
-                    label: const Text('Like'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.bookmark,color: Color.fromARGB(255, 90, 78, 66),),
-                    label: const Text('Watch Later'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              
               const Divider(
                 color: Colors.black54,
                 thickness: 1,
