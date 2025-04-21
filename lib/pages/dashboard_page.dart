@@ -176,7 +176,6 @@ class _HeaderSectionWeeklyState extends State<HeaderSectionWeekly> {
       ),
       child: Column(
         children: [
-          // Week header with navigation buttons
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
@@ -216,18 +215,7 @@ class _HeaderSectionWeeklyState extends State<HeaderSectionWeekly> {
               ],
             ),
           ),
-          // Week date timeline - Using Padding and Align instead of Center with mainAxisAlignment
-          // Expanded(
-          //   child: Padding(
-          //     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          //     child: LayoutBuilder(
-          //       builder: (context, constraints) {
-          //         return Align(
-          //           alignment: Alignment.center,
-          //           child: SizedBox(
-          //             // Set a fixed width to center the timeline if needed
-          //             width: constraints.maxWidth,
-          //             child:
+          const SizedBox(height: 2),
                        EasyDateTimeLine(
                         key: ValueKey('week-${_weekStartDate.toString()}'),
                         initialDate: _selectedDate,
@@ -285,12 +273,6 @@ class _HeaderSectionWeeklyState extends State<HeaderSectionWeekly> {
                     ),
                   );
                 }
-    //           ),
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 
   String _getMonthName(int month) {
@@ -310,7 +292,6 @@ class _HeaderSectionWeeklyState extends State<HeaderSectionWeekly> {
     ];
     return monthNames[month - 1];
   }
-// }
 
 class BottomSection extends StatelessWidget {
   final String randomQuote;
@@ -429,7 +410,7 @@ class _MoodStatsCardState extends State<MoodStatsCard> {
         rankData[i]['rank'] = i + 1;
       }
 
-      // Keep only top 5
+      // Keep only top 3
       if (rankData.length > 3) {
         rankData = rankData.sublist(0, 3);
       }
@@ -500,7 +481,7 @@ class _MoodStatsCardState extends State<MoodStatsCard> {
               : _weekRank.isEmpty
               ? Center(
                 child: Container(
-                  height: 150, // Reduced from 200 to 150
+                  height: 150, 
                   alignment: Alignment.center,
                   child: const Text(
                     'No mood data available for this week',
@@ -518,7 +499,7 @@ class _MoodStatsCardState extends State<MoodStatsCard> {
                   // Rank List Container
                   Expanded(
                     child: Container(
-                      height: 150, // Reduced from 200 to 150
+                      height: 150, 
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),

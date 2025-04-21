@@ -14,7 +14,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final DatabaseHelper _userDb =
-      DatabaseHelper(); // Your main DatabaseHelper instance
+      DatabaseHelper();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
@@ -314,7 +314,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                           color: Color(0xFFBCBCBC),
                                         ),
                                         onPressed:
-                                            _pickImage, // Pick image when pressed
+                                            _pickImage, 
                                       ),
                                     ),
                                   ),

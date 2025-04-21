@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_project/bottom_navigationbar/navigation_page.dart';
+import 'pages/Login_page.dart';
 import 'models/database_helper.dart'; 
 
 
 void main() async {
-  // Ensure Flutter bindings are initialized before accessing platform channels
   WidgetsFlutterBinding.ensureInitialized();
   
 
@@ -22,8 +21,8 @@ class MyApp extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: BottomNavigationPage(),
+    return  MaterialApp(
+      home: LoginPage(),
     );
   }
 }

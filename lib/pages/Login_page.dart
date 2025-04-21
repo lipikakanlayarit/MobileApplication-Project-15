@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_project/bottom_navigationbar/navigation_page.dart';
-// import 'home_page.dart';
 import '/pages/Signup_page.dart';
 import 'Forgotpwd.dart';
 import 'package:mobile_project/models/database_helper.dart';
@@ -71,7 +70,6 @@ class _LoginPageState extends State<LoginPage> {
       }
     }
   }
-
   // Dispose controllers to prevent memory leaks
   @override
   void dispose() {
@@ -138,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Email field (replacing username)
+                      // Email field 
                       _buildTextField(
                         icon: Icons.email,
                         hintText: 'Email',
@@ -205,7 +203,6 @@ class _LoginPageState extends State<LoginPage> {
                         alignment: Alignment.centerRight,
                         child: GestureDetector(
                           onTap: () {
-                            // Navigate to forgot password screen
                             Navigator.push(
                               context,
                               MaterialPageRoute(

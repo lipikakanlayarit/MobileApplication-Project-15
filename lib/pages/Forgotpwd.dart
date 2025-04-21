@@ -146,7 +146,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 width: 2.5,
               ),
             ),
-            // Fill color (optional)
             filled: true,
             fillColor: Colors.white.withOpacity(0.1),
 

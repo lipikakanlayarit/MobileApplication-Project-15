@@ -11,7 +11,6 @@ class ChecklistManager {
   }
 
   ChecklistManager._internal() {
-    // Initialize with default values immediately
     _resetChecklist();
   }
 
@@ -287,7 +286,7 @@ class _QuestPageState extends State<QuestPage> with WidgetsBindingObserver {
   }
 
   Widget _buildProgressBar(double screenWidth) {
-    final progressBarWidth = screenWidth * 0.7; // 70% of screen width
+    final progressBarWidth = screenWidth * 0.7; 
     
     return Center(
       child: Container(
@@ -299,7 +298,6 @@ class _QuestPageState extends State<QuestPage> with WidgetsBindingObserver {
         ),
         child: Stack(
           children: [
-            // Ensure progress is a valid number between 0 and 1
             if (progress.isFinite && progress >= 0 && progress <= 1)
               AnimatedContainer(
                 duration: const Duration(milliseconds: 500),
@@ -318,14 +316,12 @@ class _QuestPageState extends State<QuestPage> with WidgetsBindingObserver {
   }
 
   Widget _buildChecklistSection() {
-    // Debug print to verify checklist content
     print('Building checklist with ${checklistManager.checklist.length} items');
     checklistManager.checklist.forEach((key, value) {
       print('  $key: $value');
     });
     
     return Container(
-      // width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
       decoration: const BoxDecoration(
         color: Color(0xFFFDF2D2),
@@ -422,7 +418,6 @@ class CheckboxTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: isChecked ?  const Color(0xFFB7CA79) : Colors.brown,
           borderRadius: BorderRadius.circular(12),
-          // Add shadow for better visibility
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),

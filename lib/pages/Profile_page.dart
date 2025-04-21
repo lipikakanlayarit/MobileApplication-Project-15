@@ -20,8 +20,6 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     _loadUserData();
   }
-
-  // ฟังก์ชันดึงข้อมูลผู้ใช้จากฐานข้อมูล
   Future<void> _loadUserData() async {
     try {
       final String? imagePath = _userData?['profileImagePath'];
@@ -34,14 +32,14 @@ class _ProfilePageState extends State<ProfilePage> {
         }
       }
       final userData = await _settings.getUserData();
-      print("User data loaded: $userData"); // Debug print
+      print("User data loaded: $userData"); 
       setState(() {
         _userData = userData;
       });
     } catch (e) {
       print("Error loading user data: $e");
       setState(() {
-        _userData = {}; // Empty map as fallback
+        _userData = {}; 
       });
     }
   }
@@ -240,14 +238,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
                         TextButton(
                           onPressed: () {
-                            // Remove all previous pages from the stack, and only keep the LoginPage
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => LoginPage(),
                               ),
                               (route) =>
-                                  false, // This ensures that no previous pages are in the stack
+                                  false, 
                             );
                           },
                           child: const Text(

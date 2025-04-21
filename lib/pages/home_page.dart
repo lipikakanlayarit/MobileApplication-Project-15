@@ -11,12 +11,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // Create GlobalKey to access TodayMoodSectionState
   final GlobalKey<_TodayMoodSectionState> _todayMoodKey = GlobalKey();
-
-  // Method to refresh TodayMoodSection
+  
   void _refreshTodayMood() {
-    _todayMoodKey.currentState?.loadMessagesFromOutside(); // Call refresh
+    _todayMoodKey.currentState?.loadMessagesFromOutside(); // refresh
   }
 
   @override
@@ -32,8 +30,8 @@ class _HomePageState extends State<HomePage> {
           BottomSection(
             screenWidth: screenWidth,
             screenHeight: screenHeight,
-            onRefreshTodayMood: _refreshTodayMood, // Pass callback to BottomSection
-            todayMoodKey: _todayMoodKey, // Pass the key to TodayMoodSection
+            onRefreshTodayMood: _refreshTodayMood, //  callback to BottomSection
+            todayMoodKey: _todayMoodKey,
           ),
         ],
       ),
@@ -145,11 +143,11 @@ class BottomSection extends StatelessWidget {
           FeelButtonSection(
             screenWidth: screenWidth,
             screenHeight: screenHeight,
-            onMessageSent: onRefreshTodayMood, // Pass callback to FeelButtonSection
+            onMessageSent: onRefreshTodayMood, 
           ),
           SizedBox(height: 10),
           TodayMoodSection(
-            key: todayMoodKey, // Assign the key to TodayMoodSection
+            key: todayMoodKey, 
             screenWidth: screenWidth,
             screenHeight: screenHeight,
           ),
@@ -179,7 +177,7 @@ class FeelButtonSection extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => ChatPage(
               userId: 1,
-              onMessageSent: onMessageSent, // Pass callback to ChatPage
+              onMessageSent: onMessageSent, 
             ),
           ),
         );
@@ -225,8 +223,8 @@ class TodayMoodSection extends StatefulWidget {
   const TodayMoodSection({
     required this.screenWidth,
     required this.screenHeight,
-    Key? key, // Accept key parameter
-  }) : super(key: key); // Pass key to superclass
+    Key? key,
+  }) : super(key: key); 
 
   @override
   State<TodayMoodSection> createState() => _TodayMoodSectionState();

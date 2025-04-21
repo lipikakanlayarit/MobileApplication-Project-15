@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '/pages/Login_page.dart';
 import 'package:mobile_project/bottom_navigationbar/navigation_page.dart';
-import 'package:mobile_project/models/database_helper.dart'; // Import the database helper
+import 'package:mobile_project/models/database_helper.dart'; 
 
 class SignUpScreen extends StatefulWidget {
   @override
