@@ -52,9 +52,17 @@ shared_preferences - จัดเก็บข้อมูลการตั้�
 
 อ่านบทความ - เข้าถึงบทความและเนื้อหาเกี่ยวกับการดูแลสุขภาพจิต<br>
 <img width="218" alt="image" src="https://github.com/user-attachments/assets/5993c302-fa82-433a-ac1c-fce7f751e1f7" />
+<br>
+<img width="140" alt="image" src="https://github.com/user-attachments/assets/457a22c9-1e9f-4ce0-870d-fc74832694f6" />
+
 
 สะสม streak - กด check list เพื่อปลูกต้นไม้เพื่อสะสม streak<br>
 <img width="218" alt="image" src="https://github.com/user-attachments/assets/11ffed3b-37de-49a6-8757-b4abd7816b9a" />
+
+โปรไฟล์ - กดไปหน้า profile ถ้าต้องการอัปเดตข้อมูล profile ให้กดไปที่ setting<br>
+<img width="218" alt="image" src="https://github.com/user-attachments/assets/d7b88916-48ff-4510-9c53-582281fdfcbe" />
+<br>
+<img width="218" alt="image" src="https://github.com/user-attachments/assets/83ce4c32-6969-4030-babc-670a9146e4ee" />
 
 
 
